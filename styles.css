@@ -224,7 +224,7 @@ a {
 .hero__content {
   --hero-wordmark-width: min(62rem, 96vw);
   position: relative;
-  z-index: 2;
+  z-index: 12;
   min-height: 100vh;
   min-height: 100svh;
   width: 100%;
@@ -264,46 +264,62 @@ a {
   will-change: transform;
 }
 
+.hero__float.hero__float--animated {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  width: var(--float-base-width);
+  transform: translate3d(var(--float-x), var(--float-y), 0);
+}
+
+.hero__float.hero__float--animated .sprite {
+  transform: scale(var(--float-scale, 1)) rotate(var(--float-rotate, 0deg));
+  transform-origin: center center;
+  will-change: transform;
+}
+
 .hero__float--disk {
-  left: clamp(-1rem, 1vw, 1rem);
-  top: clamp(-1rem, 2vw, 1rem);
-  width: clamp(8.5rem, 17vw, 16rem);
-  transform: rotate(-9deg);
+  left: clamp(-6.5rem, -2vw, -1rem);
+  top: clamp(-5.75rem, -2vw, -1rem);
+  width: clamp(15rem, 30vw, 28rem);
+  transform: rotate(-11deg);
 }
 
 .hero__float--roll {
-  right: clamp(-1.5rem, 0vw, 1rem);
-  top: clamp(-1rem, 1vw, 0.5rem);
-  width: clamp(8rem, 18vw, 15.75rem);
+  right: clamp(-6rem, -2vw, -0.75rem);
+  top: clamp(-4.75rem, -1vw, -0.25rem);
+  width: clamp(14rem, 28vw, 25rem);
   transform: rotate(8deg);
 }
 
 .hero__float--tent {
-  left: 50%;
-  top: clamp(0rem, 2vw, 1rem);
-  width: clamp(8rem, 18vw, 14rem);
-  transform: translateX(-4%) rotate(9deg);
+  left: 46.5%;
+  top: clamp(-0.5rem, 1vw, 0.75rem);
+  width: clamp(14rem, 28vw, 24rem);
+  transform: translateX(-50%) rotate(9deg);
 }
 
 .hero__float--mirror {
-  left: clamp(0.5rem, 1vw, 1rem);
-  bottom: clamp(5rem, 9vw, 7rem);
-  width: clamp(8rem, 18vw, 15rem);
+  left: clamp(-4.5rem, -1vw, 0.5rem);
+  bottom: clamp(1rem, 5vw, 3rem);
+  width: clamp(14rem, 29vw, 25rem);
   transform: rotate(-8deg);
 }
 
 .hero__float--candle {
   left: 50%;
-  bottom: clamp(2rem, 6vw, 4rem);
-  width: clamp(5.5rem, 11vw, 8.5rem);
+  bottom: clamp(-1rem, 1vw, 0.75rem);
+  width: clamp(7rem, 15vw, 12rem);
   transform: translateX(-50%);
 }
 
 .hero__float--pretzel {
-  right: clamp(-1.5rem, -1vw, 1rem);
-  bottom: clamp(3rem, 8vw, 5rem);
-  width: clamp(8.25rem, 18vw, 15rem);
-  transform: rotate(14deg);
+  right: clamp(-6.5rem, -2vw, -0.5rem);
+  bottom: clamp(0.5rem, 4vw, 3rem);
+  width: clamp(14rem, 30vw, 26rem);
+  transform: rotate(12deg);
 }
 
 .pill-button {
@@ -438,6 +454,8 @@ a {
 }
 
 .device-frame--intro {
+  position: relative;
+  z-index: 2;
   width: min(31rem, 78vw);
 }
 
@@ -452,6 +470,8 @@ a {
 }
 
 .project-grid {
+  position: relative;
+  z-index: 12;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: clamp(0.75rem, 1.8vw, 1.4rem);
@@ -494,6 +514,8 @@ a {
 }
 
 .workspace .device-frame {
+  position: relative;
+  z-index: 12;
   margin-bottom: clamp(-3rem, -5vw, -1.5rem);
 }
 
@@ -531,8 +553,18 @@ a {
 
 .about__content {
   position: relative;
-  z-index: 1;
+  z-index: 12;
   justify-items: center;
+}
+
+.problem .section-copy,
+.solution .display-title,
+.solution .section-copy,
+.spaces .section-copy,
+.about .eyebrow,
+.about .section-copy {
+  position: relative;
+  z-index: 12;
 }
 
 .about__eyebrow {
@@ -626,32 +658,37 @@ a {
   }
 
   .hero__float--disk {
-    left: -1rem;
-    top: 0;
-    width: clamp(7rem, 23vw, 12rem);
+    left: -2.75rem;
+    top: -1.75rem;
+    width: clamp(10rem, 29vw, 15rem);
   }
 
   .hero__float--roll {
-    right: -1.5rem;
-    top: 0;
-    width: clamp(7rem, 24vw, 12rem);
+    right: -3rem;
+    top: -1.4rem;
+    width: clamp(9.5rem, 29vw, 14rem);
   }
 
   .hero__float--tent {
-    top: 1.25rem;
-    width: clamp(7rem, 24vw, 11rem);
+    top: 0.4rem;
+    width: clamp(9.5rem, 28vw, 13.5rem);
   }
 
   .hero__float--mirror {
-    left: 0;
-    bottom: 6.5rem;
-    width: clamp(7rem, 24vw, 12rem);
+    left: -2.2rem;
+    bottom: 4.2rem;
+    width: clamp(9.5rem, 30vw, 14.5rem);
   }
 
   .hero__float--pretzel {
-    right: -1rem;
-    bottom: 5.75rem;
-    width: clamp(7rem, 24vw, 12rem);
+    right: -2.4rem;
+    bottom: 3.8rem;
+    width: clamp(9.75rem, 30vw, 15rem);
+  }
+
+  .hero__float--candle {
+    bottom: 2.2rem;
+    width: clamp(5.75rem, 14vw, 7.75rem);
   }
 
   .project-grid {
@@ -736,37 +773,37 @@ a {
   }
 
   .hero__float--disk {
-    left: -1.25rem;
-    top: 0.25rem;
-    width: 5.75rem;
+    left: -1.8rem;
+    top: -0.4rem;
+    width: 7rem;
   }
 
   .hero__float--roll {
-    right: -1.5rem;
-    top: 0.15rem;
-    width: 5.9rem;
+    right: -1.9rem;
+    top: -0.3rem;
+    width: 7rem;
   }
 
   .hero__float--tent {
-    top: 0.75rem;
-    width: 5.75rem;
+    top: 0.35rem;
+    width: 7rem;
   }
 
   .hero__float--mirror {
-    left: -0.5rem;
-    width: 5.85rem;
-    bottom: 6.35rem;
+    left: -1.2rem;
+    width: 7rem;
+    bottom: 5.35rem;
   }
 
   .hero__float--pretzel {
-    right: -1rem;
-    width: 6rem;
-    bottom: 6.15rem;
+    right: -1.35rem;
+    width: 7.2rem;
+    bottom: 5rem;
   }
 
   .hero__float--candle {
-    bottom: 5.15rem;
-    width: 4rem;
+    bottom: 4.2rem;
+    width: 4.8rem;
   }
 
   .story__background img {
