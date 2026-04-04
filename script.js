@@ -1,6 +1,6 @@
 const siteLinks = {
   download: "",
-  about: "",
+  about: "mailto:gonzalo_minuto@mde.harvard.edu",
 };
 
 const introDeviceScreen = {
@@ -162,6 +162,46 @@ function easeInOutCubic(value) {
   return 1 - Math.pow(-2 * value + 2, 3) / 2;
 }
 
+function setupAboutContentCap() {
+  const aboutContent = document.querySelector(".about__content");
+  const aboutButton = document.querySelector(".about__button");
+
+  if (!aboutContent || !aboutButton) {
+    return;
+  }
+
+  let rafId = 0;
+
+  function updateContentCap() {
+    rafId = 0;
+
+    const buttonRect = aboutButton.getBoundingClientRect();
+    const contentRect = aboutContent.getBoundingClientRect();
+    const buttonVisible = buttonRect.top < window.innerHeight && buttonRect.bottom > 0;
+    const currentOffset = Number.parseFloat(
+      aboutContent.style.getPropertyValue("--about-content-offset") || "0",
+    );
+    const naturalTop = contentRect.top - currentOffset;
+    const topLimit = 16;
+    const offset = buttonVisible && naturalTop < topLimit ? topLimit - naturalTop : 0;
+
+    aboutContent.style.setProperty("--about-content-offset", `${offset}px`);
+  }
+
+  function requestUpdate() {
+    if (rafId) {
+      return;
+    }
+
+    rafId = window.requestAnimationFrame(updateContentCap);
+  }
+
+  updateContentCap();
+
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
+}
+
 function setupEmojiScrollAnimation() {
   const introDevice = document.querySelector("[data-intro-device]");
   const emojiElements = Array.from(document.querySelectorAll("[data-emoji]"));
@@ -300,5 +340,6 @@ function setupEmojiScrollAnimation() {
 document.addEventListener("DOMContentLoaded", () => {
   buildProjectGrid();
   wireCtas();
+  setupAboutContentCap();
   setupEmojiScrollAnimation();
 });
