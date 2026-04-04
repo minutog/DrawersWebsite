@@ -16,7 +16,7 @@ const emojiScrollTargets = {
   candle: {
     startRotate: 0,
     endRotate: -14,
-    spin: 8,
+    spin: 12,
     x: 0.26,
     y: 0.15,
     widthRatio: 0.36,
@@ -25,7 +25,7 @@ const emojiScrollTargets = {
   roll: {
     startRotate: 8,
     endRotate: 16,
-    spin: -10,
+    spin: -14,
     x: 0.82,
     y: 0.16,
     widthRatio: 0.38,
@@ -34,7 +34,7 @@ const emojiScrollTargets = {
   disk: {
     startRotate: -11,
     endRotate: 4,
-    spin: 14,
+    spin: 18,
     x: 0.54,
     y: 0.44,
     widthRatio: 0.26,
@@ -43,7 +43,7 @@ const emojiScrollTargets = {
   mirror: {
     startRotate: -8,
     endRotate: -10,
-    spin: -12,
+    spin: -16,
     x: 0.18,
     y: 0.67,
     widthRatio: 0.4,
@@ -52,7 +52,7 @@ const emojiScrollTargets = {
   pretzel: {
     startRotate: 12,
     endRotate: 8,
-    spin: 10,
+    spin: 14,
     x: 0.49,
     y: 0.68,
     widthRatio: 0.38,
@@ -61,7 +61,7 @@ const emojiScrollTargets = {
   tent: {
     startRotate: 9,
     endRotate: -6,
-    spin: -9,
+    spin: -13,
     x: 0.79,
     y: 0.83,
     widthRatio: 0.33,
@@ -72,36 +72,42 @@ const emojiScrollTargets = {
 const projects = [
   {
     title: "Project 1",
+    emojiKey: "disk",
     image: "site-assets/computer-disk.png",
     spriteClass: "sprite--disk",
     width: "8.4rem",
   },
   {
     title: "Project 2",
+    emojiKey: "roll",
     image: "site-assets/roll-of-paper.png",
     spriteClass: "sprite--roll",
     width: "8.4rem",
   },
   {
     title: "Project 3",
+    emojiKey: "tent",
     image: "site-assets/tent.png",
     spriteClass: "sprite--tent",
     width: "7.8rem",
   },
   {
     title: "Project 4",
+    emojiKey: "pretzel",
     image: "site-assets/pretzel.png",
     spriteClass: "sprite--pretzel",
     width: "7.6rem",
   },
   {
     title: "Project 5",
+    emojiKey: "mirror",
     image: "site-assets/mirror-ball.png",
     spriteClass: "sprite--mirror-ball",
     width: "7.6rem",
   },
   {
     title: "Project 6",
+    emojiKey: "candle",
     image: "site-assets/candle.png",
     spriteClass: "sprite--candle",
     width: "7.6rem",
@@ -116,7 +122,7 @@ function buildProjectGrid() {
     .map(
       (project) => `
         <article class="project-card reveal-block" data-reveal>
-          <div class="project-card__sprite sprite ${project.spriteClass}" style="--card-width: ${project.width};">
+          <div class="project-card__sprite sprite ${project.spriteClass}" data-project-emoji-target="${project.emojiKey}" style="--card-width: ${project.width};">
             <img src="${project.image}" alt="" loading="lazy" decoding="async" />
           </div>
           <h3 class="project-card__title">${project.title}</h3>
@@ -159,11 +165,23 @@ function easeInOutCubic(value) {
 function setupEmojiScrollAnimation() {
   const introDevice = document.querySelector("[data-intro-device]");
   const emojiElements = Array.from(document.querySelectorAll("[data-emoji]"));
+  const projectGrid = document.querySelector("[data-project-grid]");
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  if (!introDevice || emojiElements.length === 0 || reduceMotionQuery.matches) {
+  if (!introDevice || !projectGrid || emojiElements.length === 0 || reduceMotionQuery.matches) {
     return;
   }
+
+  const projectTargetElements = Array.from(document.querySelectorAll("[data-project-emoji-target]"));
+  const projectTargetsByKey = new Map(
+    projectTargetElements.map((element) => [element.dataset.projectEmojiTarget, element]),
+  );
+
+  if (projectTargetsByKey.size === 0) {
+    return;
+  }
+
+  document.documentElement.classList.add("emoji-scroll-active");
 
   let emojiStates = [];
   let rafId = 0;
@@ -186,6 +204,7 @@ function setupEmojiScrollAnimation() {
       return {
         element,
         config,
+        projectTargetElement: projectTargetsByKey.get(element.dataset.emoji),
         startLeft: rect.left,
         startTop: rect.top,
         startWidth: rect.width,
@@ -213,24 +232,43 @@ function setupEmojiScrollAnimation() {
     const screenWidth = introRect.width * introDeviceScreen.width;
     const screenHeight = introRect.height * introDeviceScreen.height;
     const introTop = window.scrollY + introRect.top;
-    const endScroll = Math.max(1, introTop - window.innerHeight * 0.28);
-    const rawProgress = clamp(window.scrollY / endScroll, 0, 1);
-    const progress = easeInOutCubic(rawProgress);
+    const clusterEndScroll = Math.max(1, introTop - window.innerHeight * 0.28);
+    const projectGridRect = projectGrid.getBoundingClientRect();
+    const projectGridTop = window.scrollY + projectGridRect.top;
+    const gridTravelStart = Math.max(clusterEndScroll, projectGridTop - window.innerHeight * 0.9);
+    const gridTravelEnd = Math.max(gridTravelStart + 1, projectGridTop - window.innerHeight * 0.55);
+    const clusterProgress = easeInOutCubic(clamp(window.scrollY / clusterEndScroll, 0, 1));
+    const gridProgress = easeInOutCubic(
+      clamp((window.scrollY - gridTravelStart) / (gridTravelEnd - gridTravelStart), 0, 1),
+    );
 
     emojiStates.forEach((state) => {
+      if (!state.projectTargetElement) {
+        return;
+      }
+
       const targetWidth = introRect.width * state.config.widthRatio;
-      const scale = targetWidth / state.startWidth;
-      const targetCenterX = screenLeft + screenWidth * state.config.x;
-      const targetCenterY = screenTop + screenHeight * state.config.y + introRect.height * introDeviceLandingOffsetY;
       const startCenterX = state.startLeft + state.startWidth / 2;
       const startCenterY = state.startTop + state.startHeight / 2;
-      const currentCenterX = lerp(startCenterX, targetCenterX, progress);
-      const currentCenterY = lerp(startCenterY, targetCenterY, progress);
+      const clusterCenterX = screenLeft + screenWidth * state.config.x;
+      const clusterCenterY = screenTop + screenHeight * state.config.y + introRect.height * introDeviceLandingOffsetY;
+      const clusterScale = targetWidth / state.startWidth;
+      const clusterRotate =
+        lerp(state.config.startRotate, state.config.endRotate, clusterProgress) +
+        Math.sin(clusterProgress * Math.PI) * state.config.spin;
+      const phaseOneCenterX = lerp(startCenterX, clusterCenterX, clusterProgress);
+      const phaseOneCenterY = lerp(startCenterY, clusterCenterY, clusterProgress);
+      const projectRect = state.projectTargetElement.getBoundingClientRect();
+      const projectCenterX = projectRect.left + projectRect.width / 2;
+      const projectCenterY = projectRect.top + projectRect.height / 2;
+      const projectScale = projectRect.width / state.startWidth;
+      const currentCenterX = lerp(phaseOneCenterX, projectCenterX, gridProgress);
+      const currentCenterY = lerp(phaseOneCenterY, projectCenterY, gridProgress);
       const currentLeft = currentCenterX - state.startWidth / 2;
       const currentTop = currentCenterY - state.startHeight / 2;
-      const currentScale = lerp(1, scale, progress);
-      const rotationalDrift = Math.sin(progress * Math.PI) * state.config.spin;
-      const currentRotate = lerp(state.config.startRotate, state.config.endRotate, progress) + rotationalDrift;
+      const currentScale = lerp(lerp(1, clusterScale, clusterProgress), projectScale, gridProgress);
+      const gridRotateDrift = Math.sin(gridProgress * Math.PI) * state.config.spin * 0.4;
+      const currentRotate = lerp(clusterRotate, 0, gridProgress) + gridRotateDrift;
 
       state.element.style.setProperty("--float-x", `${currentLeft}px`);
       state.element.style.setProperty("--float-y", `${currentTop}px`);
