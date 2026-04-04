@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drawers | Flow Without Distractions</title>
+    <meta
+      name="description"
+      content="Drawers gives every project its own intentional space in macOS so you can move between work with more focus."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="preload" href="site-assets/drawers-wordmark.png" as="image" />
+    <link rel="preload" href="site-assets/drawers-ui-preview.png" as="image" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <main id="main">
+      <section class="section hero" id="top">
+        <div class="container hero__scene">
+          <div class="hero__glow" aria-hidden="true"></div>
+
+          <div class="hero__float hero__float--disk motion-layer" data-depth="0.12" aria-hidden="true">
+            <div class="sprite sprite--disk">
+              <img src="site-assets/computer-disk.png" alt="" />
+            </div>
+          </div>
+
+          <div class="hero__float hero__float--roll motion-layer" data-depth="0.18" aria-hidden="true">
+            <div class="sprite sprite--roll">
+              <img src="site-assets/roll-of-paper.png" alt="" />
+            </div>
+          </div>
+
+          <div class="hero__float hero__float--tent motion-layer" data-depth="0.1" aria-hidden="true">
+            <div class="sprite sprite--tent">
+              <img src="site-assets/tent.png" alt="" />
+            </div>
+          </div>
+
+          <div class="hero__float hero__float--mirror motion-layer" data-depth="0.2" aria-hidden="true">
+            <div class="sprite sprite--mirror-ball">
+              <img src="site-assets/mirror-ball.png" alt="" />
+            </div>
+          </div>
+
+          <div class="hero__float hero__float--candle motion-layer" data-depth="0.08" aria-hidden="true">
+            <div class="sprite sprite--candle">
+              <img src="site-assets/candle.png" alt="" />
+            </div>
+          </div>
+
+          <div class="hero__float hero__float--pretzel motion-layer" data-depth="0.16" aria-hidden="true">
+            <div class="sprite sprite--pretzel">
+              <img src="site-assets/pretzel.png" alt="" />
+            </div>
+          </div>
+
+          <div class="hero__content reveal-block" data-reveal>
+            <p class="eyebrow hero__eyebrow">Flow without distractions with</p>
+            <img
+              class="hero__wordmark"
+              src="site-assets/drawers-wordmark.png"
+              alt="Drawers"
+              width="1600"
+              height="408"
+              fetchpriority="high"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="section problem">
+        <div class="container stack">
+          <p class="section-copy section-copy--danger">
+            You want to work on your computer.
+            <br />
+            But it's too easy to get distracted.
+            <br />
+            <span>Multitasking across projects, notifications, social media...</span>
+          </p>
+
+          <figure class="device-frame reveal-block" data-reveal>
+            <img
+              src="site-assets/drawers-ui-preview.png"
+              alt="Drawers on a MacBook screen, showing focused project spaces."
+              width="1600"
+              height="1229"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="section solution">
+        <div class="container stack stack--tight">
+          <h2 class="display-title display-title--accent">Drawers fixes that.</h2>
+          <p class="section-copy section-copy--soft">Separate your work into different spaces.</p>
+        </div>
+      </section>
+
+      <section class="section spaces" id="spaces">
+        <div class="container stack">
+          <div class="project-grid" data-project-grid></div>
+
+          <p class="section-copy section-copy--muted">
+            In each space: everything you need for that project.
+            <br />
+            Files. Websites. Apps. Chats.
+            <br />
+            <br />
+            Nothing else.
+            <br />
+            <br />
+            Move between projects with intention.
+            <br />
+            Not as a distraction.
+          </p>
+        </div>
+      </section>
+
+      <section class="section workspace">
+        <div class="container stack">
+          <figure class="device-frame device-frame--large reveal-block" data-reveal>
+            <img
+              src="site-assets/drawers-ui-preview.png"
+              alt="A closer look at the Drawers workspace layout on macOS."
+              width="1600"
+              height="1229"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="section about" id="about-story">
+        <div class="about__background" aria-hidden="true"></div>
+
+        <div class="container stack stack--tight about__content">
+          <p class="eyebrow about__eyebrow">Drawers brings</p>
+          <img
+            class="about__wordmark reveal-block"
+            data-reveal
+            src="site-assets/aliveness-wordmark.png"
+            alt="Aliveness"
+            width="1600"
+            height="428"
+            loading="lazy"
+            decoding="async"
+          />
+          <p class="section-copy section-copy--light">
+            into macOS through simple, intuitive changes to its UI.
+          </p>
+          <a class="pill-button" data-link-key="about" href="#">
+            <span>About Us</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <div class="floating-download" aria-label="Persistent download action">
+      <a class="pill-button floating-download__button" data-link-key="download" href="#">
+        <span>Download</span>
+      </a>
+    </div>
+  </body>
+</html>
