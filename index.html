@@ -20,8 +20,6 @@
     <main id="main">
       <section class="section hero" id="top">
         <div class="container hero__scene">
-          <div class="hero__glow" aria-hidden="true"></div>
-
           <div class="hero__float hero__float--disk motion-layer" data-depth="0.12" aria-hidden="true">
             <div class="sprite sprite--disk">
               <img src="site-assets/computer-disk.png" alt="" />
@@ -59,7 +57,13 @@
           </div>
 
           <div class="hero__content reveal-block" data-reveal>
-            <p class="eyebrow hero__eyebrow">Flow without distractions with</p>
+            <p class="eyebrow hero__eyebrow">
+              Flow
+              <br />
+              without distractions
+              <br />
+              with
+            </p>
             <img
               class="hero__wordmark"
               src="site-assets/drawers-wordmark.png"
@@ -78,6 +82,7 @@
             You want to work on your computer.
             <br />
             But it's too easy to get distracted.
+            <br />
             <br />
             <span>Multitasking across projects, notifications, social media...</span>
           </p>
@@ -120,44 +125,55 @@
         </div>
       </section>
 
-      <section class="section workspace">
-        <div class="container stack">
-          <figure class="device-frame device-frame--large reveal-block" data-reveal>
-            <img
-              src="site-assets/drawers-ui-preview.png"
-              alt="A closer look at the Drawers workspace layout on macOS."
-              width="1600"
-              height="1229"
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
-        </div>
-      </section>
-
-      <section class="section about" id="about-story">
-        <div class="about__background" aria-hidden="true"></div>
-
-        <div class="container stack stack--tight about__content">
-          <p class="eyebrow about__eyebrow">Drawers brings</p>
+      <div class="story">
+        <div class="story__background" aria-hidden="true">
           <img
-            class="about__wordmark reveal-block"
-            data-reveal
-            src="site-assets/aliveness-wordmark.png"
-            alt="Aliveness"
-            width="1600"
-            height="428"
+            src="site-assets/background-edit.png"
+            alt=""
+            width="1728"
+            height="1728"
             loading="lazy"
             decoding="async"
           />
-          <p class="section-copy section-copy--light">
-            into macOS through simple, intuitive changes to its UI.
-          </p>
-          <a class="pill-button" data-link-key="about" href="#">
-            <span>About Us</span>
-          </a>
         </div>
-      </section>
+
+        <section class="section workspace">
+          <div class="container stack">
+            <figure class="device-frame device-frame--large reveal-block" data-reveal>
+              <img
+                src="site-assets/drawers-ui-preview.png"
+                alt="A closer look at the Drawers workspace layout on macOS."
+                width="1600"
+                height="1229"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
+        </section>
+
+        <section class="section about" id="about-story">
+          <div class="container stack stack--tight about__content">
+            <p class="eyebrow about__eyebrow">Drawers brings</p>
+            <img
+              class="about__wordmark reveal-block"
+              data-reveal
+              src="site-assets/aliveness-wordmark.png"
+              alt="Aliveness"
+              width="1600"
+              height="428"
+              loading="lazy"
+              decoding="async"
+            />
+            <p class="section-copy section-copy--light">
+              into macOS through simple, intuitive changes to its UI.
+            </p>
+            <a class="pill-button" data-link-key="about" href="#">
+              <span>About Us</span>
+            </a>
+          </div>
+        </section>
+      </div>
     </main>
 
     <div class="floating-download" aria-label="Persistent download action">

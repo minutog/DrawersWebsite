@@ -65,8 +65,7 @@ function wireCtas() {
     const href = siteLinks[link.dataset.linkKey];
 
     if (!href) {
-      link.classList.add("pill-button--disabled");
-      link.setAttribute("aria-disabled", "true");
+      link.setAttribute("href", "#");
       link.addEventListener("click", (event) => event.preventDefault());
       return;
     }
