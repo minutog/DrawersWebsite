@@ -311,7 +311,7 @@ a {
   right: clamp(-10rem, -5vw, -1.25rem);
   top: clamp(-7.5rem, -2vw, -0.75rem);
   width: clamp(35.5rem, 39vw, 45rem);
-  transform: translateX(35%);
+  transform: translateX(35%)  translatey(-15%);
 }
 
 .hero__float--tent {
