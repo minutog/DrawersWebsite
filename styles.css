@@ -1,12 +1,16 @@
 @font-face {
   font-family: "TRJN DaVinci";
   src:
+    url("site-assets/TRJNDaVinci-Bold-Trial.otf") format("opentype"),
     local("TRJN DaVinci"),
     local("TRJN DaVinci Bold"),
+    local("TRJNDaVinci Bold Trial"),
+    local("TRJNDaVinci-Bold-Trial"),
     local("TRJN DaVinci Bold-Trial"),
     local("TRJN_DaVinci:Bold-Trial");
   font-style: normal;
   font-weight: 700;
+  font-display: swap;
 }
 
 :root {
@@ -37,6 +41,8 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -46,6 +52,10 @@ body {
   font-family: var(--body-font);
   color: var(--ink);
   background: #ffffff;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
 }
 
 img {
@@ -109,6 +119,10 @@ a {
 .section-copy,
 .project-card__title {
   font-family: var(--display-font);
+  -webkit-font-smoothing: auto;
+  font-synthesis: none;
+  font-kerning: normal;
+  text-rendering: geometricPrecision;
 }
 
 .eyebrow {
@@ -118,10 +132,11 @@ a {
   text-shadow: var(--paper-text-shadow);
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #000;
+  paint-order: stroke fill;
   font-size: clamp(1.45rem, 3vw, 2.5rem);
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
+  line-height: 1;
   text-align: center;
 }
 
@@ -132,7 +147,7 @@ a {
   font-size: clamp(3.1rem, 7vw, 5.318rem);
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
+  line-height: 1;
   letter-spacing: -0.03em;
 }
 
@@ -142,6 +157,7 @@ a {
   text-shadow: 0 8.509px 8.509px rgba(0, 0, 0, 0.25);
   -webkit-text-stroke-width: 2.13px;
   -webkit-text-stroke-color: #00c3ff;
+  paint-order: stroke fill;
 }
 
 .section-copy {
@@ -153,10 +169,11 @@ a {
   text-shadow: var(--paper-text-shadow);
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #000;
+  paint-order: stroke fill;
   font-size: clamp(1.4rem, 3vw, 2.5rem);
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
+  line-height: 1;
 }
 
 .section-copy--danger {
@@ -165,6 +182,7 @@ a {
   text-shadow: none;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #be4242;
+  paint-order: stroke fill;
   font-size: clamp(1.8rem, 4vw, 40px);
 }
 
@@ -456,7 +474,7 @@ a {
   font-family: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
   font-weight: 700;
   font-size: clamp(1.85rem, 4.4vw, 2.5rem);
-  line-height: normal;
+  line-height: 1;
   text-shadow: 0 1px 4px rgba(23, 64, 143, 0.8);
   transition: transform 180ms ease;
 }
@@ -564,7 +582,7 @@ a {
   font-size: clamp(1rem, 1.4vw, 1.35rem);
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
+  line-height: 1;
 }
 
 .workspace {
