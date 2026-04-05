@@ -195,6 +195,7 @@ a {
 
 .problem .device-frame {
   margin-bottom: clamp(-2.5rem, -4vw, -1rem);
+  overflow: visible;
 }
 
 .problem__lead,
@@ -253,7 +254,7 @@ a {
 .hero__eyebrow {
   position: absolute;
   left: 50%;
-  top: clamp(4.2rem, calc(23svh - (var(--hero-wordmark-width) * 0.06375) + 0.4rem), 15.8rem);
+  top: clamp(5.8rem, calc(23svh - (var(--hero-wordmark-width) * 0.006375) + 2.2rem), 17.8rem);
   transform: translate(-50%, -50%);
   width: max-content;
   max-width: calc(100vw - 2rem);
@@ -293,44 +294,85 @@ a {
 
 .hero__float--disk {
   left: clamp(-11rem, -5vw, -1.75rem);
-  top: clamp(-8.5rem, -3vw, -1.75rem);
-  width: clamp(19.5rem, 39vw, 36rem);
-  transform: rotate(-11deg);
+  top: clamp(-20.5rem, -3vw, -1.75rem);
+  width: clamp(29.5rem, 39vw, 45rem);
+  transform: translateX(-50%) translatey(-15%);
 }
 
 .hero__float--roll {
   right: clamp(-10rem, -5vw, -1.25rem);
   top: clamp(-7.5rem, -2vw, -0.75rem);
-  width: clamp(18.5rem, 36vw, 33rem);
-  transform: rotate(8deg);
+  width: clamp(35.5rem, 39vw, 45rem);
+  transform: translateX(35%);
 }
 
 .hero__float--tent {
   left: 45.5%;
   top: clamp(-1.25rem, 0vw, 0.5rem);
-  width: clamp(18.25rem, 33vw, 30rem);
-  transform: translateX(-50%) rotate(9deg);
+  width: clamp(28.25rem, 33vw, 45rem);
+  transform: translateX(-60%) rotate(9deg);
 }
 
 .hero__float--mirror {
   left: clamp(-8rem, -4vw, -0.25rem);
   bottom: clamp(-2.75rem, 1vw, 1.75rem);
-  width: clamp(18.5rem, 37vw, 33rem);
-  transform: rotate(-8deg);
+  width: clamp(38.5rem, 40vw, 48rem);
+  transform: translateX(-45%) translatey(+35%);
 }
 
 .hero__float--candle {
   left: 50%;
   bottom: clamp(-3rem, -1vw, 0rem);
-  width: clamp(9.25rem, 19vw, 15rem);
-  transform: translateX(-50%);
+  width: clamp(40rem, 35vw, 45rem);
+  transform: translateX(-50%) translatey(+20%);
 }
 
 .hero__float--pretzel {
   right: clamp(-11rem, -5vw, -1rem);
   bottom: clamp(-1.75rem, 1vw, 1.75rem);
-  width: clamp(18.5rem, 39vw, 36rem);
-  transform: rotate(12deg);
+  width: clamp(29.5rem, 39vw, 45rem);
+  transform: translateX(45%);
+}
+
+.intro-apps {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.intro-app {
+  position: absolute;
+  opacity: var(--intro-app-opacity, 0);
+  transform: translate3d(var(--intro-app-shift-x, 0px), var(--intro-app-shift-y, 24px), 0)
+    scale(calc(var(--intro-app-scale, 0.35) * 0.20));
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.intro-app--gmail {
+  left: -30%;
+  top: -45%;
+  width: 19.5%;
+}
+
+.intro-app--instagram {
+  left: 25%;
+  top: -25%;
+  width: 13.5%;
+}
+
+.intro-app--slack {
+  right: 12%;
+  top: 5%;
+  width: 15%;
+}
+
+.intro-app--message {
+  left: 33%;
+  top: 5%;
+  width: 15%;
 }
 
 .pill-button {

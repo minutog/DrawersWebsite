@@ -14,8 +14,8 @@ const introDeviceLandingOffsetY = 0.1;
 
 const emojiScrollTargets = {
   candle: {
-    startRotate: 0,
-    endRotate: -14,
+    startRotate: -7,
+    endRotate: -25,
     spin: 12,
     x: 0.26,
     y: 0.15,
@@ -23,8 +23,8 @@ const emojiScrollTargets = {
     z: 7,
   },
   roll: {
-    startRotate: 8,
-    endRotate: 16,
+    startRotate: 28,
+    endRotate: 336,
     spin: -14,
     x: 0.82,
     y: 0.16,
@@ -33,35 +33,35 @@ const emojiScrollTargets = {
   },
   disk: {
     startRotate: -11,
-    endRotate: 4,
+    endRotate: 14,
     spin: 18,
     x: 0.54,
-    y: 0.44,
+    y: 0.24,
     widthRatio: 0.26,
     z: 3,
   },
   mirror: {
     startRotate: -8,
-    endRotate: -10,
-    spin: -16,
-    x: 0.18,
-    y: 0.67,
+    endRotate: 20,
+    spin: -30,
+    x: 0.08,
+    y: 0.77,
     widthRatio: 0.4,
     z: 5,
   },
   pretzel: {
-    startRotate: 12,
-    endRotate: 8,
+    startRotate: 15,
+    endRotate: -50,
     spin: 14,
     x: 0.49,
-    y: 0.68,
+    y: 0.80,
     widthRatio: 0.38,
     z: 6,
   },
   tent: {
-    startRotate: 9,
+    startRotate: -12,
     endRotate: -6,
-    spin: -13,
+    spin: -17,
     x: 0.79,
     y: 0.83,
     widthRatio: 0.33,
@@ -192,6 +192,13 @@ function easeInOutCubic(value) {
   return 1 - Math.pow(-2 * value + 2, 3) / 2;
 }
 
+function easeOutBack(value) {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+
+  return 1 + c3 * Math.pow(value - 1, 3) + c1 * Math.pow(value - 1, 2);
+}
+
 function setupAboutContentCap() {
   const aboutContent = document.querySelector(".about__content");
   const aboutButton = document.querySelector(".about__button");
@@ -235,6 +242,7 @@ function setupAboutContentCap() {
 function setupEmojiScrollAnimation() {
   const introDevice = document.querySelector("[data-intro-device]");
   const emojiElements = Array.from(document.querySelectorAll("[data-emoji]"));
+  const introAppElements = Array.from(document.querySelectorAll("[data-intro-app]"));
   const projectGrid = document.querySelector("[data-project-grid]");
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -246,6 +254,12 @@ function setupEmojiScrollAnimation() {
   const projectTargetsByKey = new Map(
     projectTargetElements.map((element) => [element.dataset.projectEmojiTarget, element]),
   );
+  const introAppConfig = {
+    gmail: { delay: 0.05, shiftX: -26, shiftY: 24 },
+    instagram: { delay: 0, shiftX: -12, shiftY: 20 },
+    slack: { delay: 0.1, shiftX: 26, shiftY: 20 },
+    message: { delay: 0.08, shiftX: 16, shiftY: 26 },
+  };
 
   if (projectTargetsByKey.size === 0) {
     return;
@@ -311,6 +325,24 @@ function setupEmojiScrollAnimation() {
     const gridProgress = easeInOutCubic(
       clamp((window.scrollY - gridTravelStart) / (gridTravelEnd - gridTravelStart), 0, 1),
     );
+    const appsPopProgress = clamp((clusterProgress - 0.72) / 0.24, 0, 1);
+    const appsFadeProgress = clamp((gridProgress - 0.08) / 0.3, 0, 1);
+    const appsFade = 1 - easeInOutCubic(appsFadeProgress);
+
+    introAppElements.forEach((element) => {
+      const config = introAppConfig[element.dataset.introApp] || { delay: 0, shiftX: 0, shiftY: 20 };
+      const localPopProgress = clamp((appsPopProgress - config.delay) / (1 - config.delay), 0, 1);
+      const popEase = easeOutBack(localPopProgress);
+      const opacity = clamp(localPopProgress * 1.5, 0, 1) * appsFade;
+      const scale = lerp(0.35, 1, popEase);
+      const shiftX = lerp(config.shiftX, 0, popEase);
+      const shiftY = lerp(config.shiftY, 0, popEase);
+
+      element.style.setProperty("--intro-app-opacity", `${opacity}`);
+      element.style.setProperty("--intro-app-scale", `${scale}`);
+      element.style.setProperty("--intro-app-shift-x", `${shiftX}px`);
+      element.style.setProperty("--intro-app-shift-y", `${shiftY}px`);
+    });
 
     emojiStates.forEach((state) => {
       if (!state.projectTargetElement) {
