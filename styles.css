@@ -59,10 +59,12 @@ a {
 }
 
 .skip-link {
-  position: absolute;
+  position: fixed;
   left: 1rem;
   top: 1rem;
-  transform: translateY(-200%);
+  transform: translateY(calc(-100% - 2rem));
+  opacity: 0;
+  pointer-events: none;
   z-index: 10;
   padding: 0.75rem 1rem;
   border-radius: 999px;
@@ -70,10 +72,16 @@ a {
   color: var(--ink);
   text-decoration: none;
   box-shadow: var(--shadow-soft);
+  transition:
+    transform 140ms ease,
+    opacity 140ms ease;
 }
 
-.skip-link:focus {
+.skip-link:focus,
+.skip-link:focus-visible {
   transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .section {
