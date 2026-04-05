@@ -1171,7 +1171,7 @@ a {
   }
 
   .mobile-landing__lead {
-    max-width: min(92vw, 20rem);
+    max-width: min(calc(100vw - 1.5rem), 24rem);
     margin-top: clamp(0.35rem, 1vh, 0.9rem);
     font-size: clamp(1.45rem, min(3.25vh, 6vw), 2.15rem);
     line-height: 1.02;
@@ -1187,7 +1187,7 @@ a {
   .mobile-landing__copy-group {
     display: grid;
     gap: clamp(0.55rem, 1.3vh, 1rem);
-    max-width: min(92vw, 21rem);
+    max-width: min(calc(100vw - 1.5rem), 24rem);
     margin-top: clamp(0.25rem, 0.9vh, 0.65rem);
   }
 
