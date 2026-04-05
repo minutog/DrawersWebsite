@@ -3,6 +3,12 @@ const siteLinks = {
   about: "mailto:gonzalo_minuto@mde.harvard.edu",
 };
 
+const mobileViewportQuery = "(max-width: 768px)";
+
+function isMobileViewport() {
+  return window.matchMedia(mobileViewportQuery).matches;
+}
+
 const introDeviceScreen = {
   left: 0.145,
   top: 0.03,
@@ -162,6 +168,21 @@ function buildWorkspaceCarousel() {
     .join("");
 }
 
+function buildMobileWorkspaceCarousel() {
+  const track = document.querySelector("[data-mobile-workspace-track]");
+  if (!track) return;
+
+  track.innerHTML = workspaceProjects
+    .map(
+      (project, index) => `
+        <div class="mobile-workspace-carousel__project" data-mobile-workspace-project="${index}">
+          <img src="${project.image}" alt="${project.title}" loading="lazy" decoding="async" />
+        </div>
+      `,
+    )
+    .join("");
+}
+
 function wireCtas() {
   document.querySelectorAll("[data-link-key]").forEach((link) => {
     const href = siteLinks[link.dataset.linkKey];
@@ -200,6 +221,10 @@ function easeOutBack(value) {
 }
 
 function setupAboutContentCap() {
+  if (isMobileViewport()) {
+    return;
+  }
+
   const aboutContent = document.querySelector(".about__content");
   const aboutButton = document.querySelector(".about__button");
 
@@ -240,6 +265,10 @@ function setupAboutContentCap() {
 }
 
 function setupEmojiScrollAnimation() {
+  if (isMobileViewport()) {
+    return;
+  }
+
   const introDevice = document.querySelector("[data-intro-device]");
   const emojiElements = Array.from(document.querySelectorAll("[data-emoji]"));
   const introAppElements = Array.from(document.querySelectorAll("[data-intro-app]"));
@@ -400,6 +429,10 @@ function setupEmojiScrollAnimation() {
 }
 
 function setupWorkspaceProjectCarousel() {
+  if (isMobileViewport()) {
+    return;
+  }
+
   const workspaceSection = document.querySelector("[data-workspace-section]");
   const workspaceDevice = document.querySelector("[data-workspace-device]");
   const workspaceScreen = document.querySelector("[data-workspace-screen]");
@@ -516,11 +549,114 @@ function setupWorkspaceProjectCarousel() {
   window.addEventListener("resize", handleResize);
 }
 
+function setupMobileWorkspaceAutoplay() {
+  const landing = document.querySelector(".mobile-landing");
+  const slides = Array.from(document.querySelectorAll("[data-mobile-workspace-project]"));
+  const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (!landing || slides.length === 0 || !isMobileViewport()) {
+    return;
+  }
+
+  let currentIndex = 0;
+  let intervalId = 0;
+
+  function render({ immediate = false } = {}) {
+    slides.forEach((slide, index) => {
+      const delta = index - currentIndex;
+      let position = delta;
+
+      if (delta > 1) {
+        position -= slides.length;
+      } else if (delta < -1) {
+        position += slides.length;
+      }
+
+      slide.style.transition = immediate || reduceMotionQuery.matches
+        ? "none"
+        : "transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 500ms ease";
+      slide.style.transform = `translate3d(${position * 100}%, 0, 0)`;
+      slide.style.opacity = position === 0 ? "1" : "0";
+      slide.style.zIndex = String(position === 0 ? 2 : 1);
+    });
+  }
+
+  function advance() {
+    currentIndex = (currentIndex + 1) % slides.length;
+    render();
+  }
+
+  function start() {
+    if (intervalId) {
+      window.clearInterval(intervalId);
+    }
+
+    intervalId = window.setInterval(advance, 3000);
+  }
+
+  render({ immediate: true });
+  start();
+}
+
+function setupMobileRequestModal() {
+  const modal = document.querySelector("[data-mobile-request-modal]");
+  const openButton = document.querySelector("[data-mobile-request-open]");
+  const closeButtons = Array.from(document.querySelectorAll("[data-mobile-request-close]"));
+  const form = document.querySelector("[data-mobile-request-form]");
+  const panel = document.querySelector("[data-mobile-request-panel]");
+  const input = document.querySelector("[data-mobile-request-email]");
+
+  if (!modal || !openButton || !form || !panel || !input) {
+    return;
+  }
+
+  function openModal() {
+    modal.hidden = false;
+    window.setTimeout(() => input.focus(), 40);
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    form.reset();
+  }
+
+  openButton.addEventListener("click", openModal);
+
+  closeButtons.forEach((button) => {
+    button.addEventListener("click", closeModal);
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (!input.reportValidity()) {
+      return;
+    }
+
+    const email = input.value.trim();
+
+    closeModal();
+
+    window.setTimeout(() => {
+      window.location.href = `mailto:gonzalo_minuto@mde.harvard.edu?subject=${encodeURIComponent("Drawers for Mac")}&body=${encodeURIComponent(`Please send Drawers to: ${email}`)}`;
+    }, 180);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) {
+      closeModal();
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   buildProjectGrid();
   buildWorkspaceCarousel();
+  buildMobileWorkspaceCarousel();
   wireCtas();
   setupAboutContentCap();
   setupEmojiScrollAnimation();
   setupWorkspaceProjectCarousel();
+  setupMobileWorkspaceAutoplay();
+  setupMobileRequestModal();
 });

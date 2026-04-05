@@ -247,6 +247,162 @@
       </div>
     </main>
 
+    <section class="mobile-landing" id="mobile-landing">
+      <div class="mobile-landing__background" aria-hidden="true">
+        <img
+          src="site-assets/background-edit.png"
+          alt=""
+          width="1728"
+          height="1728"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <div class="mobile-landing__floats" aria-hidden="true">
+        <div class="mobile-landing__float mobile-landing__float--tent">
+          <div class="sprite sprite--tent">
+            <img src="site-assets/tent.png" alt="" />
+          </div>
+        </div>
+        <div class="mobile-landing__float mobile-landing__float--roll">
+          <div class="sprite sprite--roll">
+            <img src="site-assets/roll-of-paper.png" alt="" />
+          </div>
+        </div>
+        <div class="mobile-landing__float mobile-landing__float--candle">
+          <div class="sprite sprite--candle">
+            <img src="site-assets/candle.png" alt="" />
+          </div>
+        </div>
+        <div class="mobile-landing__float mobile-landing__float--mirror">
+          <div class="sprite sprite--mirror-ball">
+            <img src="site-assets/mirror-ball.png" alt="" />
+          </div>
+        </div>
+        <div class="mobile-landing__float mobile-landing__float--disk">
+          <div class="sprite sprite--disk">
+            <img src="site-assets/computer-disk.png" alt="" />
+          </div>
+        </div>
+        <div class="mobile-landing__float mobile-landing__float--pretzel">
+          <div class="sprite sprite--pretzel">
+            <img src="site-assets/pretzel.png" alt="" />
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-landing__content">
+        <p class="eyebrow mobile-landing__eyebrow">
+          Flow
+          <br />
+          without distractions
+          <br />
+          with
+        </p>
+
+        <img
+          class="mobile-landing__wordmark"
+          src="site-assets/drawers-wordmark.png"
+          alt="Drawers"
+          width="1600"
+          height="408"
+          fetchpriority="high"
+        />
+
+        <p class="section-copy section-copy--danger mobile-landing__lead">
+          You want to work on your computer.
+          <br />
+          But it's too easy to get distracted.
+        </p>
+
+        <h1 class="display-title display-title--accent mobile-landing__solution">Drawers fixes that.</h1>
+
+        <div class="mobile-landing__copy-group">
+          <p class="section-copy mobile-landing__copy">Separate your work into different spaces.</p>
+          <p class="section-copy mobile-landing__copy">
+            In each space: everything you need for that project.
+            <br />
+            Files. Websites. Apps. Chats.
+          </p>
+          <p class="section-copy mobile-landing__copy">Move between projects with intention.</p>
+        </div>
+
+        <figure class="device-frame mobile-landing__device" data-mobile-workspace-device>
+          <img
+            src="site-assets/drawers-ui-workspace.png"
+            alt="A closer look at the Drawers workspace layout on macOS."
+            width="4000"
+            height="3074"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="mobile-workspace-carousel" aria-hidden="true">
+            <div class="mobile-workspace-carousel__screen" data-mobile-workspace-screen>
+              <div class="mobile-workspace-carousel__track" data-mobile-workspace-track></div>
+            </div>
+            <img
+              class="mobile-workspace-carousel__filter"
+              src="site-assets/workspace-filterframe.png"
+              alt=""
+              width="2940"
+              height="3074"
+              loading="lazy"
+              decoding="async"
+            />
+            <img
+              class="mobile-workspace-carousel__topframe"
+              src="site-assets/workspace-topframe.png"
+              alt=""
+              width="4000"
+              height="3074"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </figure>
+      </div>
+
+      <div class="mobile-landing__cta-wrap">
+        <button class="pill-button mobile-landing__cta" type="button" data-mobile-request-open>
+          <span>Get It On Your Mac</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="mobile-request-modal" data-mobile-request-modal hidden>
+      <button class="mobile-request-modal__backdrop" type="button" data-mobile-request-close aria-label="Close request form"></button>
+      <div
+        class="mobile-request-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mobile-request-title"
+      >
+        <div class="mobile-request-modal__panel" data-mobile-request-panel>
+          <h2 class="mobile-request-modal__title" id="mobile-request-title">
+            We'll email you the link so that you can open it on your mac. You will love Drawers!
+          </h2>
+          <form class="mobile-request-modal__form" data-mobile-request-form>
+            <input
+              class="mobile-request-modal__input"
+              id="mobile-request-email"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+              data-mobile-request-email
+              aria-label="Email"
+            />
+            <button class="pill-button mobile-request-modal__submit" type="submit">
+              <span>Send Me Drawers</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <div class="floating-download" aria-label="Persistent download action">
       <a class="pill-button floating-download__button" data-link-key="download" href="#">
         <span>Download</span>
