@@ -114,6 +114,21 @@ const projects = [
   },
 ];
 
+const workspaceProjects = [
+  {
+    title: "Project 1",
+    image: "site-assets/workspace-project-1.png",
+  },
+  {
+    title: "Project 2",
+    image: "site-assets/workspace-project-2.png",
+  },
+  {
+    title: "Project 3",
+    image: "site-assets/workspace-project-3.png",
+  },
+];
+
 function buildProjectGrid() {
   const grid = document.querySelector("[data-project-grid]");
   if (!grid) return;
@@ -127,6 +142,21 @@ function buildProjectGrid() {
           </div>
           <h3 class="project-card__title">${project.title}</h3>
         </article>
+      `,
+    )
+    .join("");
+}
+
+function buildWorkspaceCarousel() {
+  const screen = document.querySelector("[data-workspace-screen]");
+  if (!screen) return;
+
+  screen.innerHTML = workspaceProjects
+    .map(
+      (project, index) => `
+        <div class="workspace-carousel__project" data-workspace-carousel-item data-project-index="${index}">
+          <img src="${project.image}" alt="${project.title}" loading="lazy" decoding="async" />
+        </div>
       `,
     )
     .join("");
@@ -337,9 +367,128 @@ function setupEmojiScrollAnimation() {
   window.addEventListener("resize", handleResize);
 }
 
+function setupWorkspaceProjectCarousel() {
+  const workspaceSection = document.querySelector("[data-workspace-section]");
+  const workspaceDevice = document.querySelector("[data-workspace-device]");
+  const workspaceScreen = document.querySelector("[data-workspace-screen]");
+  const carouselItems = Array.from(document.querySelectorAll("[data-workspace-carousel-item]"));
+  const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (
+    !workspaceSection ||
+    !workspaceDevice ||
+    !workspaceScreen ||
+    carouselItems.length === 0 ||
+    reduceMotionQuery.matches
+  ) {
+    return;
+  }
+
+  let rafId = 0;
+  const holdUnits = 0.48;
+  const moveUnits = 1;
+
+  function getWorkspaceTrackOffset(progress, slideWidth) {
+    const segments = [];
+
+    for (let index = 0; index < workspaceProjects.length; index += 1) {
+      segments.push({
+        type: "hold",
+        index,
+        duration: holdUnits,
+      });
+
+      if (index < workspaceProjects.length - 1) {
+        segments.push({
+          type: "move",
+          from: index,
+          to: index + 1,
+          duration: moveUnits,
+        });
+      }
+    }
+
+    const totalDuration = segments.reduce((sum, segment) => sum + segment.duration, 0);
+    const timelinePosition = progress * totalDuration;
+
+    let cursor = 0;
+
+    for (const segment of segments) {
+      const nextCursor = cursor + segment.duration;
+
+      if (timelinePosition <= nextCursor) {
+        if (segment.type === "hold") {
+          return -segment.index * slideWidth;
+        }
+
+        const localProgress = easeInOutCubic((timelinePosition - cursor) / segment.duration);
+        return -lerp(segment.from * slideWidth, segment.to * slideWidth, localProgress);
+      }
+
+      cursor = nextCursor;
+    }
+
+    return -(workspaceProjects.length - 1) * slideWidth;
+  }
+
+  function updateWorkspaceSceneHeight() {
+    const deviceHeight = workspaceDevice.getBoundingClientRect().height;
+    const stickTop = Math.max(0, (window.innerHeight - deviceHeight) / 2);
+    const totalUnits = workspaceProjects.length * holdUnits + (workspaceProjects.length - 1) * moveUnits;
+    const scrollLength = window.innerHeight * Math.max(1.8, totalUnits * 0.9);
+
+    workspaceSection.style.setProperty("--workspace-device-height", `${deviceHeight}px`);
+    workspaceSection.style.setProperty("--workspace-stick-top", `${stickTop}px`);
+    workspaceSection.style.setProperty("--workspace-scroll-length", `${scrollLength}px`);
+  }
+
+  function updateWorkspaceCarousel() {
+    rafId = 0;
+
+    const sectionRect = workspaceSection.getBoundingClientRect();
+    const sectionStyles = window.getComputedStyle(workspaceSection);
+    const scrollLength = Number.parseFloat(sectionStyles.getPropertyValue("--workspace-scroll-length")) || 1;
+    const stickTop = Number.parseFloat(sectionStyles.getPropertyValue("--workspace-stick-top")) || 0;
+    const pinStart = window.scrollY + sectionRect.top - stickTop;
+    const localScroll = clamp(window.scrollY - pinStart, 0, scrollLength);
+    const sceneProgress = clamp(localScroll / scrollLength, 0, 1);
+    const slideWidth = workspaceScreen.clientWidth;
+    const trackOffset = getWorkspaceTrackOffset(sceneProgress, slideWidth);
+
+    carouselItems.forEach((item, index) => {
+      const x = index * slideWidth + trackOffset;
+      item.style.setProperty("--workspace-x", `${x}px`);
+      item.style.opacity = "1";
+    });
+
+    workspaceDevice.classList.toggle("workspace__frame--active", sceneProgress > 0 && sceneProgress < 1);
+  }
+
+  function requestUpdate() {
+    if (rafId) {
+      return;
+    }
+
+    rafId = window.requestAnimationFrame(updateWorkspaceCarousel);
+  }
+
+  function handleResize() {
+    updateWorkspaceSceneHeight();
+    requestUpdate();
+  }
+
+  updateWorkspaceSceneHeight();
+  updateWorkspaceCarousel();
+
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", handleResize);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   buildProjectGrid();
+  buildWorkspaceCarousel();
   wireCtas();
   setupAboutContentCap();
   setupEmojiScrollAnimation();
+  setupWorkspaceProjectCarousel();
 });

@@ -139,18 +139,41 @@
           />
         </div>
 
-        <section class="section workspace">
-          <div class="container stack">
-            <figure class="device-frame device-frame--large reveal-block" data-reveal>
-              <img
-                src="site-assets/drawers-ui-preview.png"
-                alt="A closer look at the Drawers workspace layout on macOS."
-                width="1600"
-                height="1229"
-                loading="lazy"
-                decoding="async"
-              />
-            </figure>
+        <section class="section workspace workspace--carousel" data-workspace-section>
+          <div class="workspace__sticky">
+            <div class="container stack">
+              <figure class="device-frame device-frame--large workspace__frame reveal-block" data-workspace-device data-reveal>
+                <img
+                  src="site-assets/drawers-ui-workspace.png"
+                  alt="A closer look at the Drawers workspace layout on macOS."
+                  width="4000"
+                  height="3074"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="workspace-carousel" aria-hidden="true">
+                  <div class="workspace-carousel__screen" data-workspace-screen></div>
+                  <img
+                    class="workspace-carousel__filter"
+                    src="site-assets/workspace-filterframe.png"
+                    alt=""
+                    width="2940"
+                    height="3074"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <img
+                    class="workspace-carousel__topframe"
+                    src="site-assets/workspace-topframe.png"
+                    alt=""
+                    width="4000"
+                    height="3074"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </figure>
+            </div>
           </div>
         </section>
 
