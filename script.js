@@ -598,6 +598,66 @@ function setupMobileWorkspaceAutoplay() {
   start();
 }
 
+function setupMobileLandingBalance() {
+  const landing = document.querySelector(".mobile-landing");
+  const content = document.querySelector(".mobile-landing__content");
+  const wordmark = document.querySelector(".mobile-landing__wordmark");
+  const textBlock = document.querySelector("[data-mobile-text-block]");
+  const device = document.querySelector("[data-mobile-workspace-device]");
+  const ctaWrap = document.querySelector(".mobile-landing__cta-wrap");
+
+  if (!landing || !content || !wordmark || !textBlock || !device || !ctaWrap || !isMobileViewport()) {
+    return;
+  }
+
+  const deviceAspect = 4000 / 3074;
+  let rafId = 0;
+
+  function updateBalance() {
+    rafId = 0;
+
+    const contentRect = content.getBoundingClientRect();
+    const wordmarkRect = wordmark.getBoundingClientRect();
+    const textBlockRect = textBlock.getBoundingClientRect();
+    const ctaRect = ctaWrap.getBoundingClientRect();
+    const contentStyles = window.getComputedStyle(content);
+    const horizontalPadding =
+      (Number.parseFloat(contentStyles.paddingLeft) || 0) + (Number.parseFloat(contentStyles.paddingRight) || 0);
+    const baseMinGap = clamp(window.innerHeight * 0.016, 8, 18);
+    const maxDeviceHeightByWidth = Math.max(0, (contentRect.width - horizontalPadding) / deviceAspect);
+    const availableRegion = Math.max(0, ctaRect.top - wordmarkRect.bottom);
+    const minSpaceForDevice = Math.max(0, availableRegion - textBlockRect.height);
+
+    let deviceHeight = Math.max(0, Math.min(maxDeviceHeightByWidth, minSpaceForDevice - baseMinGap * 3));
+    let gap = Math.max(0, (minSpaceForDevice - deviceHeight) / 3);
+
+    if (gap < baseMinGap) {
+      gap = Math.min(baseMinGap, Math.max(0, minSpaceForDevice / 3));
+      deviceHeight = Math.max(0, Math.min(maxDeviceHeightByWidth, minSpaceForDevice - gap * 3));
+      gap = Math.max(0, (minSpaceForDevice - deviceHeight) / 3);
+    }
+
+    content.style.setProperty("--mobile-flow-gap", `${gap}px`);
+    content.style.setProperty("--mobile-device-height", `${deviceHeight}px`);
+  }
+
+  function requestUpdate() {
+    if (rafId) {
+      return;
+    }
+
+    rafId = window.requestAnimationFrame(updateBalance);
+  }
+
+  requestUpdate();
+  window.addEventListener("resize", requestUpdate);
+  window.addEventListener("load", requestUpdate);
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(requestUpdate).catch(() => {});
+  }
+}
+
 function setupMobileRequestModal() {
   const modal = document.querySelector("[data-mobile-request-modal]");
   const openButton = document.querySelector("[data-mobile-request-open]");
@@ -658,5 +718,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEmojiScrollAnimation();
   setupWorkspaceProjectCarousel();
   setupMobileWorkspaceAutoplay();
+  setupMobileLandingBalance();
   setupMobileRequestModal();
 });
