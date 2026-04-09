@@ -1,6 +1,11 @@
 const siteLinks = {
-  download: "",
+  download: "https://wwwkieran.github.io/DrawersReleases/DrawersDock.dmg",
   about: "mailto:gonzalo_minuto@mde.harvard.edu",
+};
+
+const mobileEmailCapture = {
+  endpoint: "https://formsubmit.co/ajax/gonzalo_minuto@mde.harvard.edu",
+  subject: "Drawers mobile download request",
 };
 
 const mobileViewportQuery = "(max-width: 768px)";
@@ -665,10 +670,13 @@ function setupMobileRequestModal() {
   const form = document.querySelector("[data-mobile-request-form]");
   const panel = document.querySelector("[data-mobile-request-panel]");
   const input = document.querySelector("[data-mobile-request-email]");
+  const submitButton = form?.querySelector('[type="submit"]');
 
-  if (!modal || !openButton || !form || !panel || !input) {
+  if (!modal || !openButton || !form || !panel || !input || !submitButton) {
     return;
   }
+
+  let isSubmitting = false;
 
   function openModal() {
     modal.hidden = false;
@@ -686,20 +694,48 @@ function setupMobileRequestModal() {
     button.addEventListener("click", closeModal);
   });
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    if (!input.reportValidity()) {
+    if (isSubmitting || !input.reportValidity()) {
       return;
     }
 
     const email = input.value.trim();
+    isSubmitting = true;
+    submitButton.disabled = true;
+    submitButton.classList.add("pill-button--disabled");
 
-    closeModal();
+    try {
+      const response = await fetch(mobileEmailCapture.endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          _replyto: email,
+          _subject: mobileEmailCapture.subject,
+          _template: "table",
+          source: "Drawers mobile landing",
+        }),
+      });
 
-    window.setTimeout(() => {
-      window.location.href = `mailto:gonzalo_minuto@mde.harvard.edu?subject=${encodeURIComponent("Drawers for Mac")}&body=${encodeURIComponent(`Please send Drawers to: ${email}`)}`;
-    }, 180);
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || (result && (result.success === false || result.success === "false"))) {
+        throw new Error("Email capture failed");
+      }
+
+      closeModal();
+    } catch (error) {
+      window.alert("We couldn't save your email right now. Please try again in a moment.");
+    } finally {
+      isSubmitting = false;
+      submitButton.disabled = false;
+      submitButton.classList.remove("pill-button--disabled");
+    }
   });
 
   document.addEventListener("keydown", (event) => {
