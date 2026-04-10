@@ -94,6 +94,15 @@ a {
   pointer-events: auto;
 }
 
+.mobile-request-modal__target {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .section {
   position: relative;
   padding: clamp(3.5rem, 8vw, 6.5rem) 0;
@@ -1385,6 +1394,15 @@ a {
 
   .mobile-request-modal__submit span {
     font-size: 1.2rem;
+  }
+
+  .mobile-request-modal__target {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
   }
 }
 

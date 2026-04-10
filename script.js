@@ -4,8 +4,11 @@ const siteLinks = {
 };
 
 const mobileEmailCapture = {
-  endpoint: "https://formsubmit.co/ajax/gonzalo_minuto@mde.harvard.edu",
+  appsScriptEndpoint: "https://script.google.com/macros/s/AKfycbx8i-Om1UcBBqiHQSE9zu9luzWF9z3Fceo-ssA3196iouvjc0ZQdJIuuh3lZdfyoPmNYg/exec",
+  fallbackEndpoint: "https://formsubmit.co/ajax/gonzalominuto@gmail.com",
   subject: "Drawers mobile download request",
+  modalTitle: "We'll email you the link so that you can open it on your mac. You will love Drawers!",
+  successTitle: "We'll email you the file, thanks so much for your interest in Drawers.",
 };
 
 const mobileViewportQuery = "(max-width: 768px)";
@@ -670,22 +673,54 @@ function setupMobileRequestModal() {
   const form = document.querySelector("[data-mobile-request-form]");
   const panel = document.querySelector("[data-mobile-request-panel]");
   const input = document.querySelector("[data-mobile-request-email]");
+  const title = document.querySelector("#mobile-request-title");
   const submitButton = form?.querySelector('[type="submit"]');
+  const targetFrame = document.querySelector("[data-mobile-request-target]");
+  const sourceInput = form?.querySelector('[name="source"]');
+  const userAgentInput = form?.querySelector('[name="userAgent"]');
 
-  if (!modal || !openButton || !form || !panel || !input || !submitButton) {
+  if (!modal || !openButton || !form || !panel || !input || !title || !submitButton || !targetFrame || !sourceInput || !userAgentInput) {
     return;
   }
 
   let isSubmitting = false;
+  let pendingIframeSubmit = false;
+
+  function isAppsScriptConfigured() {
+    return Boolean(mobileEmailCapture.appsScriptEndpoint && /^https:\/\/script\.google\.com\//.test(mobileEmailCapture.appsScriptEndpoint));
+  }
+
+  function resetModal() {
+    pendingIframeSubmit = false;
+    title.textContent = mobileEmailCapture.modalTitle;
+    form.hidden = false;
+    form.reset();
+    submitButton.disabled = false;
+    submitButton.classList.remove("pill-button--disabled");
+    sourceInput.value = "Drawers mobile landing";
+    userAgentInput.value = navigator.userAgent;
+  }
+
+  function showSuccessState() {
+    title.textContent = mobileEmailCapture.successTitle;
+    form.hidden = true;
+    window.setTimeout(() => {
+      if (!modal.hidden) {
+        closeModal();
+      }
+    }, 1800);
+  }
 
   function openModal() {
+    resetModal();
     modal.hidden = false;
     window.setTimeout(() => input.focus(), 40);
   }
 
   function closeModal() {
     modal.hidden = true;
-    form.reset();
+    resetModal();
+    isSubmitting = false;
   }
 
   openButton.addEventListener("click", openModal);
@@ -705,9 +740,20 @@ function setupMobileRequestModal() {
     isSubmitting = true;
     submitButton.disabled = true;
     submitButton.classList.add("pill-button--disabled");
+    sourceInput.value = "Drawers mobile landing";
+    userAgentInput.value = navigator.userAgent;
+
+    if (isAppsScriptConfigured()) {
+      pendingIframeSubmit = true;
+      form.action = mobileEmailCapture.appsScriptEndpoint;
+      form.method = "POST";
+      form.target = "mobile-request-target";
+      form.submit();
+      return;
+    }
 
     try {
-      const response = await fetch(mobileEmailCapture.endpoint, {
+      const response = await fetch(mobileEmailCapture.fallbackEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -728,7 +774,7 @@ function setupMobileRequestModal() {
         throw new Error("Email capture failed");
       }
 
-      closeModal();
+      showSuccessState();
     } catch (error) {
       window.alert("We couldn't save your email right now. Please try again in a moment.");
     } finally {
@@ -736,6 +782,18 @@ function setupMobileRequestModal() {
       submitButton.disabled = false;
       submitButton.classList.remove("pill-button--disabled");
     }
+  });
+
+  targetFrame.addEventListener("load", () => {
+    if (!pendingIframeSubmit) {
+      return;
+    }
+
+    pendingIframeSubmit = false;
+    isSubmitting = false;
+    submitButton.disabled = false;
+    submitButton.classList.remove("pill-button--disabled");
+    showSuccessState();
   });
 
   document.addEventListener("keydown", (event) => {
