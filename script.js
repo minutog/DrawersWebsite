@@ -1,5 +1,5 @@
 const siteLinks = {
-  download: "https://wwwkieran.github.io/DrawersReleases/DrawersDock.dmg",
+  download: "https://wwwkieran.github.io/DrawersReleases/Drawers.dmg",
   about: "mailto:gonzalo_minuto@mde.harvard.edu",
 };
 
