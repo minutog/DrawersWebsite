@@ -1,0 +1,97 @@
+:root {
+  --paper: #faf1ee;
+  --paper-warm: #f3e6e2;
+  --ink: #14110f;
+  --ink-soft: #2e2826;
+  --muted: #7a6862;
+  --accent: #2a4bb8;
+  --accent-soft: #8ba6e8;
+  --cream: #fdf6f3;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+a { color: inherit; }
+
+.serif {
+  font-family: var(--font-fraunces), 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 60;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.serif-b {
+  font-family: var(--font-fraunces), 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 60;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.ital {
+  font-family: var(--font-instrument), 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.mono-label {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* MacBook stage: picturepan2/devices.css renders the macbook-pro at fixed 740x434 (+ power bar).
+   Wrap it in a stage that scales down for narrower viewports via `zoom`. */
+.macbook-stage {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  display: flex;
+  justify-content: center;
+  filter: drop-shadow(0 30px 40px rgba(26,20,12,0.18));
+}
+.macbook-stage .device-macbook-pro { zoom: 1.7; }
+@media (max-width: 1280px) { .macbook-stage .device-macbook-pro { zoom: 1.4; } }
+@media (max-width: 1024px) { .macbook-stage .device-macbook-pro { zoom: 1.15; } }
+@media (max-width: 880px)  { .macbook-stage .device-macbook-pro { zoom: 0.95; } }
+@media (max-width: 760px)  { .macbook-stage .device-macbook-pro { zoom: 0.8; } }
+@media (max-width: 640px)  { .macbook-stage .device-macbook-pro { zoom: 0.6; } }
+@media (max-width: 480px)  { .macbook-stage .device-macbook-pro { zoom: 0.45; } }
+/* Resize the screen rectangle to match the video's 960:620 (1.548) aspect exactly.
+   Video fills 100% — no crop, no letterbox. */
+.macbook-stage .device-macbook-pro .device-screen {
+  overflow: hidden;
+  background: #0d0906;
+  width: 600px;
+  height: 387px;
+}
+.macbook-stage .device-screen video {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}

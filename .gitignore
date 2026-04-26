@@ -1,4 +1,15 @@
-# wrangler files
+# dependencies
+node_modules/
+
+# next
+.next/
+next-env.d.ts
+
+# misc
+.DS_Store
+*.log
+
+# wrangler
 .wrangler
 .dev.vars*
 !.dev.vars.example

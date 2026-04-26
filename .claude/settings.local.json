@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(mkdir -p /tmp/design_extract)",
+      "Bash(tar -xzvf /Users/kparikh/.claude/projects/-Users-kparikh-Developer-DrawersWebsite/db6e6c6f-700e-4ca5-95ee-d301e5d909ef/tool-results/webfetch-1777068932396-3tg6he.bin -C /tmp/design_extract/)",
+      "Bash(python3 -m http.server 8000)",
+      "Bash(git checkout *)",
+      "Bash(npm install *)",
+      "Bash(npm audit *)",
+      "Bash(PORT=3001 npm run dev)",
+      "Bash(tee /tmp/drawers-dev.log)",
+      "Read(//private/tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3001/)",
+      "Bash(curl -s http://localhost:3001/)",
+      "Bash(kill %1)",
+      "Bash(pkill -f \"next dev\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/)",
+      "WebSearch",
+      "WebFetch(domain:www.webmobilefirst.com)",
+      "Bash(curl -sSL -o /tmp/macbook-test.png \"https://web-mobile-first.s3.eu-west-3.amazonaws.com/production/mockup_apple_macbook_pro_16_2021_4e42d424b1.png\")",
+      "Read(//tmp/**)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -sSL -o /tmp/devices.css \"https://raw.githubusercontent.com/marvelapp/devices.css/master/assets/devices.min.css\")",
+      "Bash(awk '/\\\\.marvel-device\\\\{/{flag=1} flag{print} /\\\\.marvel-device\\\\.macbook \\\\.home/{flag=0; exit}' /tmp/devices.css)",
+      "WebFetch(domain:devicescss.xyz)",
+      "Bash(curl -sSL \"https://raw.githubusercontent.com/picturepan2/devices.css/master/devices.min.css\" -o /tmp/devicescss.css)",
+      "Bash(curl -sSL \"https://api.github.com/repos/picturepan2/devices.css/contents\")",
+      "Bash(curl -sSL \"https://api.github.com/repos/picturepan2/devices.css/contents/dist\")",
+      "Bash(curl -sSL \"https://api.github.com/repos/picturepan2/devices.css/contents/src\")",
+      "Bash(curl -sSL \"https://raw.githubusercontent.com/picturepan2/devices.css/master/dist/devices.min.css\" -o /tmp/devicescss.css)",
+      "Bash(grep -oE \"\\\\.device\\\\{[^}]*\\\\}|\\\\.device-frame\\\\{[^}]*\\\\}|\\\\.device-screen\\\\{[^}]*\\\\}|\\\\.device, \\\\.device-frame, \\\\.device-screen[^{]*\\\\{[^}]*\\\\}|\\\\.device \\\\*[^{]*\\\\{[^}]*\\\\}|\\\\.device::after[^{]*\\\\{[^}]*\\\\}|\\\\.device::before[^{]*\\\\{[^}]*\\\\}\" /tmp/devicescss.css)"
+    ]
+  }
+}
