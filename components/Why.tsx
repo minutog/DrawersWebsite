@@ -1,36 +1,26 @@
 import EmojiPhysics, { EMOJIS } from './EmojiPhysics';
 
-const rows = [
+const consequences = [
   {
     n: '01',
-    stat: '9.8',
-    statLabel: 'spheres of work',
-    statNote: 'the average information worker juggles per day',
-    cite: 'Gonzalez & Mark, 2004',
-    causeH: 'Fragmented project data.',
-    causeB:
-      'A single project lives across Slack, Jira, Docs, Figma, Notes, and email. No app owns the whole thing — so the worker becomes the integration layer.',
+    h: 'Your project lives across apps.',
+    b: 'Slack, Jira, Docs, Figma, Notes, inbox — you’re the only thing holding it together.',
+    img: '/why-01-fragmented.png',
+    alt: 'A single project scattered across Slack, Jira, Docs, Figma, and Notes — connected by lines to one center point. ',
   },
   {
     n: '02',
-    stat: '11:28',
-    statLabel: 'minutes per sphere',
-    statNote: 'before a switch away to another context',
-    cite: 'Gonzalez & Mark, 2004',
-    causeH: 'Mental reconstruction burden.',
-    causeB:
-      'Every switch in, you rebuild the map: which tools, which files, which conversations belong to this project. The cost is paid every eleven minutes.',
+    h: 'Project B distracts you while you’re working on A.',
+    b: 'Every shared app mixes all your projects. Sidebar, tab strip, inbox — interleaved.',
+    img: '/why-02-bleed.png',
+    alt: 'A Slack sidebar with each conversation labeled by which project it belongs to — four different projects interleaved in one app.',
   },
   {
     n: '03',
-    stat: 'residue',
-    statLabel: 'follows every switch',
-    statNote:
-      'part of your attention stays on the last task, degrading the next',
-    cite: 'Leroy, 2009',
-    causeH: 'Distraction is one click. Focus is fifteen.',
-    causeB:
-      'Entertainment sits in the same dock, with the same weight, as the tools that pay your rent. The OS treats them as equals — your nervous system pays the difference.',
+    h: 'Distraction and focus weigh the same.',
+    b: 'YouTube is one click. Your spreadsheet is one click. The dock sees no difference.',
+    img: '/why-03-distraction.png',
+    alt: 'A Netflix browser window next to an iMessage window — distraction apps one click away, same weight as work.',
   },
 ];
 
@@ -59,27 +49,30 @@ export default function Why() {
         style={{
           position: 'relative',
           zIndex: 10,
-          maxWidth: 1200,
+          maxWidth: 1100,
           marginInline: 'auto',
           pointerEvents: 'none',
         }}
       >
         <div className="mono-label" style={{ color: 'var(--accent)' }}>
-          Why this matters
+          The problem
         </div>
         <h2
           className="serif"
           style={{
-            fontSize: 92,
+            fontSize: 'clamp(56px, 6.7vw, 84px)',
             lineHeight: 0.98,
             marginTop: 18,
             marginBottom: 0,
-            maxWidth: 1200,
+            maxWidth: 1100,
             textWrap: 'balance',
           }}
         >
-          Your OS thinks every app, every file, and every notification weighs{' '}
-          <span className="ital">exactly the same.</span>
+          macOS has apps and files. It doesn&rsquo;t have{' '}
+          <span className="ital" style={{ color: 'var(--accent)' }}>
+            projects.
+          </span>{' '}
+          {/*So everything gets <span className="ital">mixed together.</span>*/}
         </h2>
         <p
           style={{
@@ -90,147 +83,129 @@ export default function Why() {
             color: 'var(--ink-soft)',
           }}
         >
-          It doesn&rsquo;t. Decades of research show three structural failures, each
-          measurable, each compounding. Focus modes and site blockers are patches.{' '}
-          <span className="ital">The structure itself is the problem.</span>
+          You do, though. Your projects
+          live in the only place macOS can&rsquo;t see: your head. Every app
+          mixes them. Every notification interrupts them. The interface treats
+          them as equals. Focus modes don&rsquo;t fix it.{' '}
+          <span className="ital" style={{ color: 'var(--ink)' }}>
+            That&rsquo;s a structural problem.
+          </span>
         </p>
 
         <div
           style={{
-            marginTop: 110,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 0,
+            marginTop: 56,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 32,
           }}
         >
-          {rows.map((r, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '0.85fr 1.15fr',
-                columnGap: 80,
-                padding: '56px 0',
-                borderTop: '1px solid rgba(26,20,12,0.14)',
-                borderBottom:
-                  i === rows.length - 1 ? '1px solid rgba(26,20,12,0.14)' : 'none',
-                alignItems: 'start',
-              }}
-            >
-              <div style={{ pointerEvents: 'none' }}>
-                <div className="mono-label" style={{ color: 'var(--muted)' }}>
-                  Finding · {r.n}
-                </div>
-                <div
-                  className="serif"
-                  style={{
-                    fontSize: 104,
-                    lineHeight: 0.95,
-                    fontWeight: 400,
-                    marginTop: 14,
-                    color: 'var(--ink)',
-                  }}
-                >
-                  {r.stat}
-                </div>
-                <div
-                  className="ital"
-                  style={{ fontSize: 26, color: 'var(--accent)', marginTop: 8 }}
-                >
-                  {r.statLabel}
-                </div>
-                <div
-                  style={{
-                    fontSize: 15,
-                    color: 'var(--ink-soft)',
-                    marginTop: 14,
-                    lineHeight: 1.5,
-                    maxWidth: 320,
-                  }}
-                >
-                  {r.statNote}
-                </div>
-                <div
-                  className="mono-label"
-                  style={{
-                    marginTop: 14,
-                    letterSpacing: 0.15,
-                    color: 'var(--muted)',
-                  }}
-                >
-                  — {r.cite}
-                </div>
-              </div>
-              <div
+          {consequences.map((c) => (
+            <div key={c.n} style={{ pointerEvents: 'auto' }}>
+              <img
+                src={c.img}
+                alt={c.alt}
                 style={{
-                  pointerEvents: 'auto',
-                  borderLeft: '2px solid var(--accent)',
-                  paddingLeft: 36,
-                  paddingTop: 8,
+                  display: 'block',
+                  width: '100%',
+                  aspectRatio: '4 / 3',
+                  objectFit: 'cover',
+                  borderRadius: 14,
+                  border: '1px solid rgba(26,20,12,0.15)',
+                  boxShadow: '0 30px 60px -20px rgba(26,20,12,0.25)',
+                  background: '#000',
+                }}
+              />
+              <div
+                className="mono-label"
+                style={{ color: 'var(--muted)', marginTop: 24 }}
+              >
+                {c.n}
+              </div>
+              <h3
+                className="serif"
+                style={{
+                  fontSize: 24,
+                  lineHeight: 1.15,
+                  fontWeight: 400,
+                  margin: '10px 0 0',
+                  textWrap: 'balance',
+                  color: 'var(--ink)',
                 }}
               >
-                <div className="mono-label" style={{ color: 'var(--accent)' }}>
-                  What the OS does wrong
-                </div>
-                <h3
-                  className="serif"
-                  style={{
-                    fontSize: 36,
-                    lineHeight: 1.15,
-                    marginTop: 14,
-                    marginBottom: 18,
-                    fontWeight: 400,
-                    textWrap: 'balance',
-                  }}
-                >
-                  {r.causeH}
-                </h3>
-                <p
-                  style={{
-                    fontSize: 17,
-                    lineHeight: 1.6,
-                    color: 'var(--ink-soft)',
-                    margin: 0,
-                    maxWidth: 560,
-                  }}
-                >
-                  {r.causeB}
-                </p>
-              </div>
+                {c.h}
+              </h3>
+              <p
+                style={{
+                  fontSize: 15,
+                  lineHeight: 1.55,
+                  color: 'var(--ink-soft)',
+                  marginTop: 10,
+                  marginBottom: 0,
+                }}
+              >
+                {c.b}
+              </p>
             </div>
           ))}
         </div>
 
         <div
           style={{
-            marginTop: 96,
-            padding: '40px 48px',
-            background: 'rgba(26,20,12,0.04)',
-            border: '1px dashed rgba(26,20,12,0.25)',
-            borderRadius: 8,
-            maxWidth: 1060,
+            marginTop: 80,
+            pointerEvents: 'auto',
           }}
         >
           <div className="mono-label" style={{ color: 'var(--accent)' }}>
-            Allostasis, briefly
+            Why this drains your energy
           </div>
           <p
             className="serif"
             style={{
-              fontSize: 32,
-              lineHeight: 1.28,
-              margin: '14px 0 28px',
-              fontWeight: 400,
+              fontSize: 30,
+              lineHeight: 1.32,
+              fontWeight: 300,
+              color: 'var(--ink)',
+              margin: '18px 0 0',
+              maxWidth: 820,
+              textWrap: 'pretty',
             }}
           >
-            Flow moments produce significantly more positive experience than non-flow
-            moments. Yet modern computer work is{' '}
-            <span className="ital">structurally hostile</span> to sustaining them.
+            Each time you switch projects, your brain rebuilds the picture
+            from scratch — pulling Slack, the doc, the Figma, the half-formed
+            plan back into one frame. It&rsquo;s not free. The brain pays for
+            prediction, and a fragmented day forces it to pay over and over.{' '}
+            <span className="ital">
+              That&rsquo;s the cost you feel as exhaustion — not the work,
+              the rebuild.
+            </span>
           </p>
-          <div className="mono-label" style={{ color: 'var(--muted)' }}>
-            — Csikszentmihalyi &amp; LeFevre, 1989
+          <div
+            className="mono-label"
+            style={{ color: 'var(--muted)', marginTop: 24 }}
+          >
+            Gonzalez &amp; Mark, 2004 · Leroy, 2009 · Csikszentmihalyi &amp;
+            LeFevre, 1989
           </div>
         </div>
+
+        <p
+          className="serif"
+          style={{
+            marginTop: 110,
+            marginBottom: 0,
+            fontSize: 'clamp(36px, 3.6vw, 46px)',
+            lineHeight: 1.18,
+            fontWeight: 300,
+            color: 'var(--ink)',
+            textWrap: 'balance',
+            maxWidth: 1000,
+          }}
+        >
+          Drawers gives macOS what it&rsquo;s missing:{' '}
+          <span className="ital">projects.</span> Every project gets its own
+          drawer — its own dock, its own apps, its own world.
+        </p>
       </div>
     </section>
   );

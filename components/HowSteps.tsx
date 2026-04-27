@@ -3,14 +3,15 @@ import Placeholder from './Placeholder';
 const steps = [
   {
     t: 'Every project gets a drawer.',
-    b: 'A drawer is its own menu bar identity, its own dock, its own space. Pull one open and the desktop you see is only the one you need.',
+    b: 'A drawer is its own menu bar identity, its own dock, its own space. Pull open a drawer and all the project context together with no noise.',
     shotLabel: 'Screenshot',
     shotNotes:
       'SPLIT SCREENSHOT —\nLEFT: a standard macOS desktop, cluttered (14 apps in dock, 3 badge unreads, mixed windows).\nRIGHT: same machine with a DIFFERENTLY-colored menubar (warm red) and a dock containing ONLY "Atlas launch" artifacts.\nAnnotations: "menubar identity", "per-project dock", "per-project Space".',
+    media: '/how-1-project-drawer.mp4',
   },
   {
     t: 'Artifacts, not apps.',
-    b: "Don't shortcut to Figma — shortcut to the one Figma file that matters. Not Slack, the #atlas-launch channel. Not Drive, the brief.",
+    b: "Don't shortcut to Figma — shortcut to the one Figma file that matters. Not Slack, the #atlas-launch channel. Not Drive, the brief doc. Searching for resources invites distraction. Drawers keeps what you need right at your fingertips.",
     shotLabel: 'Screenshot · close-up',
     shotNotes:
       'CLOSE-UP on a drawer\'s dock — show NATIVE thumbnails (not app icons):\n• A real Figma file preview with a readable filename\n• A Google Doc with the title "Atlas GTM plan v3"\n• A person avatar with a presence dot\n• A Slack channel chip "#atlas-launch · 4"\n• A Loom thumbnail with duration 02:14\nCallouts: "file, not app · channel, not workspace · person, not app".',
@@ -55,7 +56,7 @@ export default function HowSteps() {
         <h2
           className="serif"
           style={{
-            fontSize: 88,
+            fontSize: 'clamp(56px, 6.1vw, 78px)',
             lineHeight: 0.98,
             marginTop: 18,
             marginBottom: 96,
@@ -107,7 +108,34 @@ export default function HowSteps() {
                 </p>
               </div>
               <div style={{ direction: 'ltr' }}>
-                <Placeholder label={s.shotLabel} ratio="4/3" notes={s.shotNotes} />
+                {s.media ? (
+                  <div
+                    style={{
+                      aspectRatio: '1108 / 720',
+                      borderRadius: 14,
+                      overflow: 'hidden',
+                      background: '#1a140c',
+                      boxShadow: '0 30px 60px -20px rgba(26,20,12,0.25)',
+                    }}
+                  >
+                    <video
+                      src={s.media}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                        display: 'block',
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <Placeholder label={s.shotLabel} ratio="4/3" notes={s.shotNotes} />
+                )}
               </div>
             </div>
           ))}

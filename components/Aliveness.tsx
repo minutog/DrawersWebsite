@@ -34,7 +34,7 @@ export default function Aliveness() {
       >
         <p
           className="serif"
-          style={{ fontSize: 72, lineHeight: 1.1, margin: 0 }}
+          style={{ fontSize: 'clamp(44px, 5vw, 64px)', lineHeight: 1.1, margin: 0 }}
         >
           Drawers brings
         </p>
@@ -52,7 +52,7 @@ export default function Aliveness() {
         <p
           className="serif"
           style={{
-            fontSize: 48,
+            fontSize: 'clamp(32px, 3.3vw, 42px)',
             lineHeight: 1.2,
             margin: 0,
             fontWeight: 300,

@@ -22,10 +22,12 @@ export default function Nav() {
       <div style={{ display: 'flex', gap: 36, fontSize: 15 }}>
         <a href="#why" style={{ textDecoration: 'none' }}>Why</a>
         <a href="#how" style={{ textDecoration: 'none' }}>How it works</a>
+        <a href="#how" style={{ textDecoration: 'none' }}>Features</a>
         <a href="#manifesto" style={{ textDecoration: 'none' }}>Manifesto</a>
         <a href="#faq" style={{ textDecoration: 'none' }}>FAQ</a>
       </div>
       <a
+        className="download-desktop"
         href="https://wwwkieran.github.io/DrawersReleases/Drawers.dmg"
         style={{
           fontSize: 14,
@@ -39,6 +41,22 @@ export default function Nav() {
         }}
       >
         ↓ Download for Mac
+      </a>
+      <a
+        className="download-mobile"
+        href="#download"
+        style={{
+          fontSize: 14,
+          fontWeight: 500,
+          padding: '10px 20px',
+          background: 'var(--ink)',
+          color: 'var(--cream)',
+          borderRadius: 999,
+          textDecoration: 'none',
+          letterSpacing: 0.2,
+        }}
+      >
+        ↓ Send to my Mac
       </a>
     </nav>
   );

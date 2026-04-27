@@ -1,5 +1,6 @@
 import EmojiPhysics, { EMOJIS } from './EmojiPhysics';
-import EmailForm from './EmailForm';
+import SendToOtherComputer from './SendToOtherComputer';
+import SendToComputer from './SendToComputer';
 
 export default function Download() {
   return (
@@ -35,7 +36,7 @@ export default function Download() {
         <h2
           className="serif"
           style={{
-            fontSize: 120,
+            fontSize: 'clamp(64px, 8.3vw, 106px)',
             lineHeight: 0.95,
             margin: 0,
             textWrap: 'balance',
@@ -55,8 +56,31 @@ export default function Download() {
             />
           </span>
         </h2>
-        <div style={{ marginTop: 56 }}>
-          <EmailForm />
+        <div className="download-desktop" style={{ marginTop: 56, pointerEvents: 'auto' }}>
+          <a
+            href="https://wwwkieran.github.io/DrawersReleases/Drawers.dmg"
+            style={{
+              display: 'inline-block',
+              fontSize: 17,
+              fontWeight: 500,
+              padding: '20px 36px',
+              background: 'var(--ink)',
+              color: 'var(--cream)',
+              borderRadius: 999,
+              textDecoration: 'none',
+              letterSpacing: 0.2,
+            }}
+          >
+            ↓ Download Drawers for macOS
+          </a>
+          <div className="mono-label" style={{ marginTop: 18 }}>
+            Free · macOS 14+ · Local-first · No account
+          </div>
+
+          <SendToOtherComputer />
+        </div>
+        <div className="download-mobile" style={{ marginTop: 36, pointerEvents: 'auto' }}>
+          <SendToComputer />
         </div>
         <div
           className="mono-label"

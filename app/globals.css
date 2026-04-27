@@ -25,6 +25,9 @@ html, body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+html {
   overflow-x: hidden;
 }
 
@@ -64,34 +67,218 @@ a { color: inherit; }
   50% { opacity: 0.4; transform: scale(0.85); }
 }
 
-/* MacBook stage: picturepan2/devices.css renders the macbook-pro at fixed 740x434 (+ power bar).
-   Wrap it in a stage that scales down for narrower viewports via `zoom`. */
-.macbook-stage {
-  width: 100%;
-  max-width: 1280px;
-  margin-inline: auto;
+/* Desktop default: hide mobile send-to-computer block, show email form. */
+.download-mobile { display: none; }
+.download-desktop { display: block; }
+
+/* Distraction (#demo) — video left, copy right of video, both responsive. */
+.distraction-row {
   display: flex;
-  justify-content: center;
-  filter: drop-shadow(0 30px 40px rgba(26,20,12,0.18));
+  align-items: center;
+  gap: clamp(28px, 4vw, 64px);
+  width: 100%;
+  text-align: left;
 }
-.macbook-stage .device-macbook-pro { zoom: 1.7; }
-@media (max-width: 1280px) { .macbook-stage .device-macbook-pro { zoom: 1.4; } }
-@media (max-width: 1024px) { .macbook-stage .device-macbook-pro { zoom: 1.15; } }
-@media (max-width: 880px)  { .macbook-stage .device-macbook-pro { zoom: 0.95; } }
-@media (max-width: 760px)  { .macbook-stage .device-macbook-pro { zoom: 0.8; } }
-@media (max-width: 640px)  { .macbook-stage .device-macbook-pro { zoom: 0.6; } }
-@media (max-width: 480px)  { .macbook-stage .device-macbook-pro { zoom: 0.45; } }
-/* Resize the screen rectangle to match the video's 960:620 (1.548) aspect exactly.
-   Video fills 100% — no crop, no letterbox. */
-.macbook-stage .device-macbook-pro .device-screen {
+.distraction-video {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 970px;
+  border-radius: 18px;
   overflow: hidden;
   background: #0d0906;
-  width: 600px;
-  height: 387px;
+  aspect-ratio: 960 / 620;
+  filter: drop-shadow(0 30px 40px rgba(26,20,12,0.18));
 }
-.macbook-stage .device-screen video {
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  display: block;
+.distraction-copy {
+  flex: 0 1 360px;
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Mobile responsive overrides.
+   The desktop layout uses inline styles with hardcoded fixed pixel sizes.
+   At narrow viewports we override those via element-tag selectors with
+   !important to scale typography, collapse multi-col grids, and tighten
+   padding. Matches the dimensions in `Drawers Mobile.html`.
+   ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  /* generic section padding shrink */
+  section { padding-left: 22px !important; padding-right: 22px !important; }
+
+  /* nav: hide desktop link rail on mobile, keep wordmark + Get Drawers CTA */
+  nav { padding: 14px 22px !important; }
+  nav > div:nth-child(2) { display: none !important; }
+  nav a[href^="https"] { padding: 10px 16px !important; font-size: 13px !important; }
+
+  /* hero typography */
+  section:first-of-type { min-height: auto !important; padding-top: 30px !important; padding-bottom: 60px !important; }
+  section:first-of-type h1 { font-size: 48px !important; line-height: 0.95 !important; }
+  section:first-of-type h1 .hero-flow-line { font-size: 60px !important; margin-bottom: 10px !important; }
+  section:first-of-type h1 > div:nth-child(2) { margin-top: 4px !important; }
+  section:first-of-type h1 .hero-with-row { margin-top: 10px !important; }
+  section:first-of-type h1 img { height: 48px !important; transform: none !important; }
+  /* the with-wordmark row: tighten gap */
+  .hero-with-row { gap: 10px !important; }
+  section:first-of-type p { font-size: 16px !important; margin-top: 24px !important; max-width: 100% !important; padding: 0 !important; }
+  section:first-of-type a[href*="Drawers.dmg"],
+  section:first-of-type .watch-demo-btn { padding: 14px 20px !important; font-size: 14px !important; }
+  /* stack the two hero CTAs */
+  .hero-cta-row { flex-direction: column !important; gap: 10px !important; }
+  /* mono-label: tighten so it fits on one line */
+  section:first-of-type .mono-label { font-size: 10px !important; letter-spacing: 0.1em !important; white-space: nowrap !important; }
+
+  /* distraction (#demo) */
+  #demo { padding-top: 60px !important; padding-bottom: 70px !important; }
+  #demo h2 { font-size: 44px !important; line-height: 0.98 !important; }
+  #demo .distraction-row { flex-direction: column !important; gap: 32px !important; }
+  #demo .distraction-copy { flex: none !important; font-size: 16px !important; text-align: center !important; }
+
+  /* why */
+  #why { padding-top: 70px !important; padding-bottom: 80px !important; }
+  #why h2 { font-size: 44px !important; line-height: 0.98 !important; }
+  #why > div > p { font-size: 16px !important; margin-top: 18px !important; }
+  /* the 3-consequence cards: stack into one column on mobile */
+  #why div[style*="grid-template-columns:repeat(3, 1fr)"],
+  #why div[style*="grid-template-columns:repeat(3,1fr)"] {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+    margin-top: 56px !important;
+    padding-top: 36px !important;
+  }
+  #why h3 { font-size: 22px !important; line-height: 1.15 !important; }
+  #why h3 + p { font-size: 14px !important; line-height: 1.5 !important; margin-top: 10px !important; }
+  /* cost paragraph + bridge line */
+  #why p.serif { font-size: 22px !important; line-height: 1.28 !important; }
+  /* tighten cost block top spacing on mobile */
+  #why div[style*="margin-top:80px"][style*="pointer-events:auto"] {
+    margin-top: 56px !important;
+  }
+  /* bridge line gets its own larger size and more breathing room */
+  #why > div > p.serif:last-child { font-size: 30px !important; margin-top: 64px !important; }
+
+  /* how it works (#how) */
+  #how { padding-top: 70px !important; padding-bottom: 80px !important; }
+  #how h2 { font-size: 36px !important; line-height: 1.0 !important; margin-bottom: 36px !important; }
+  /* collapse alternating 2-col steps to single column, hide placeholder shots */
+  #how div[style*="grid-template-columns:1fr 1.1fr"] {
+    grid-template-columns: 1fr !important;
+    direction: ltr !important;
+    gap: 16px !important;
+  }
+  #how h3 { font-size: 24px !important; }
+  #how p { font-size: 15px !important; }
+  /* hide the screenshot/video placeholders on mobile (they're noisy) */
+  #how div[style*="aspect-ratio:4/3"],
+  #how div[style*="aspect-ratio:1108/720"] { display: none !important; }
+
+  /* aliveness (dark band) */
+  section[style*="background:var(--ink)"] { padding-top: 80px !important; padding-bottom: 80px !important; }
+  section[style*="background:var(--ink)"] p.serif:first-of-type { font-size: 36px !important; }
+  section[style*="background:var(--ink)"] img[alt="Aliveness"] { height: 70px !important; margin: 20px auto !important; }
+  section[style*="background:var(--ink)"] p.serif:nth-of-type(2) { font-size: 26px !important; }
+
+  /* manifesto */
+  #manifesto { padding-top: 70px !important; padding-bottom: 80px !important; }
+  #manifesto p.serif:first-of-type { font-size: 26px !important; line-height: 1.2 !important; }
+  #manifesto p:not(.serif) { font-size: 15px !important; }
+  #manifesto p.serif:last-of-type { font-size: 22px !important; }
+
+  /* faq */
+  #faq { padding-top: 70px !important; padding-bottom: 80px !important; }
+  #faq h2 { font-size: 36px !important; }
+  #faq h4 { font-size: 17px !important; }
+  #faq p { font-size: 15px !important; }
+  /* tighten the index column */
+  #faq div[style*="grid-template-columns:56px"] { grid-template-columns: 40px 1fr !important; gap: 12px !important; }
+
+  /* download — desktop hero copy text-wrap & font scale; the actual mobile path
+     uses SendToComputer instead, but if Download IS rendered on mobile we
+     still want it readable. */
+  #download { padding-top: 70px !important; padding-bottom: 60px !important; }
+  #download h2 { font-size: 56px !important; line-height: 0.94 !important; }
+  #download h2 img { height: 38px !important; }
+  /* footer line stack */
+  #download .mono-label[style*="justify-content:space-between"] {
+    flex-direction: column !important;
+    gap: 6px !important;
+    text-align: center !important;
+  }
+
+  /* swap email form for SendToComputer on mobile */
+  .download-desktop { display: none !important; }
+  .download-mobile { display: block !important; }
+}
+
+.flow-highlight {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  padding: 0 0.06em;
+}
+
+.flow-highlight--off .flow-highlight-svg {
+  display: none;
+}
+
+.flow-highlight-svg {
+  position: absolute;
+  left: -0.06em;
+  right: -0.06em;
+  top: 0.1em;
+  width: calc(100% + 0.12em);
+  height: 0.84em;
+  z-index: -1;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    #000 var(--flow-reveal, 0%),
+    rgba(0, 0, 0, 0.4) calc(var(--flow-reveal, 0%) + 4%),
+    transparent calc(var(--flow-reveal, 0%) + 8%),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    #000 var(--flow-reveal, 0%),
+    rgba(0, 0, 0, 0.4) calc(var(--flow-reveal, 0%) + 4%),
+    transparent calc(var(--flow-reveal, 0%) + 8%),
+    transparent 100%
+  );
+  animation: none;
+}
+
+.flow-highlight.is-loaded .flow-highlight-svg {
+  animation: flow-highlight-reveal 0.35s cubic-bezier(0.4, 0.1, 0.6, 1) 0.2s forwards;
+}
+
+.flow-highlight-text {
+  position: relative;
+}
+
+@property --flow-reveal {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+@keyframes flow-highlight-reveal {
+  0% {
+    --flow-reveal: 0%;
+  }
+  100% {
+    --flow-reveal: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-highlight.is-loaded .flow-highlight-svg {
+    animation: none;
+    --flow-reveal: 100%;
+  }
 }

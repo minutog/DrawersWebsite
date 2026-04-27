@@ -15,7 +15,7 @@ export default function Manifesto() {
         <p
           className="serif"
           style={{
-            fontSize: 48,
+            fontSize: 'clamp(32px, 3.3vw, 42px)',
             lineHeight: 1.15,
             marginTop: 24,
             marginBottom: 32,
@@ -56,7 +56,7 @@ export default function Manifesto() {
         <p
           className="serif"
           style={{
-            fontSize: 34,
+            fontSize: 'clamp(22px, 2.4vw, 30px)',
             lineHeight: 1.25,
             marginTop: 48,
             fontStyle: 'italic',

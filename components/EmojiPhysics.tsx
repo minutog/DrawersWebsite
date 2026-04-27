@@ -28,15 +28,24 @@ type Props = {
 
 export default function EmojiPhysics({
   assets,
-  count = 14,
-  minSize = 70,
-  maxSize = 130,
+  count: countProp = 14,
+  minSize: minSizeProp = 70,
+  maxSize: maxSizeProp = 130,
   gravity = 0.0025,
   friction = 1,
   bounce = 1,
   seed = 1,
   zIndex = 2,
 }: Props) {
+  // On phones, downscale emoji sizes (and slightly reduce count) so the
+  // floating physics doesn't dominate the layout. Also cap count to the
+  // number of unique assets so emojis never repeat.
+  const isMobile = useIsMobile();
+  const requested = isMobile ? Math.max(4, Math.round(countProp * 0.7)) : countProp;
+  const count = Math.min(requested, assets.length);
+  const minSize = isMobile ? Math.round(minSizeProp * 0.5) : minSizeProp;
+  const maxSize = isMobile ? Math.round(maxSizeProp * 0.5) : maxSizeProp;
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const bodiesRef = useRef<Body[]>([]);
   const elsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -235,6 +244,18 @@ export default function EmojiPhysics({
       ))}
     </div>
   );
+}
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 760px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return isMobile;
 }
 
 export const EMOJIS = [

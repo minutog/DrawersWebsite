@@ -15,10 +15,10 @@ export default function Distraction() {
         <h2
           className="serif"
           style={{
-            fontSize: 104,
+            fontSize: 'clamp(60px, 7.2vw, 92px)',
             lineHeight: 0.96,
             marginTop: 18,
-            marginBottom: 28,
+            marginBottom: 64,
             maxWidth: 1100,
             marginInline: 'auto',
             textWrap: 'balance',
@@ -28,48 +28,28 @@ export default function Distraction() {
           <br />
           <span style={{ color: 'var(--accent)' }}>Nothing</span> else in the way.
         </h2>
-        <p
-          style={{
-            fontSize: 21,
-            lineHeight: 1.5,
-            color: 'var(--ink-soft)',
-            maxWidth: 720,
-            marginInline: 'auto',
-            marginTop: 0,
-            marginBottom: 64,
-            textWrap: 'pretty',
-          }}
-        >
-          Every project gets its own menu bar identity, dock, space, and set of artifacts.
-          Switch projects, switch worlds. Close a drawer, close the noise.
-        </p>
 
-        <div
-          style={{
-            width: '100%',
-            maxWidth: 970,
-            marginInline: 'auto',
-            borderRadius: 18,
-            overflow: 'hidden',
-            background: '#0d0906',
-            aspectRatio: '960 / 620',
-            filter: 'drop-shadow(0 30px 40px rgba(26,20,12,0.18))',
-          }}
-        >
-          <video
-            src="/DrawersTheMovie.mov"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-            }}
-          />
+        <div className="distraction-row">
+          <div id="demo-video" className="distraction-video" style={{ scrollMarginBottom: 20 }}>
+            <video
+              src="/DrawersTheMovie.mov"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
+          </div>
+          <p className="distraction-copy">
+            Every project gets its own dock, space, and set of artifacts.
+            Switch projects, switch worlds.
+          </p>
         </div>
       </div>
     </section>

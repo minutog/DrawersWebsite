@@ -42,7 +42,7 @@ export default function FAQ() {
         <h2
           className="serif"
           style={{
-            fontSize: 72,
+            fontSize: 'clamp(44px, 5vw, 64px)',
             lineHeight: 1.02,
             marginTop: 18,
             marginBottom: 56,
