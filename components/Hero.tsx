@@ -4,6 +4,21 @@ import { forwardRef, useEffect, useRef, useState } from 'react';
 import EmojiPhysics, { EMOJIS } from './EmojiPhysics';
 import HeroDemo from './HeroDemo';
 
+// ─── Tunable knobs ──────────────────────────────────────────────────────────
+// Vertical spacing above the toggle (heading → toggle) and below the labels
+// (labels → subheading). They share a single value so the block stays
+// symmetrically padded.
+const BLOCK_GUTTER = 60;
+// Scroll-Y where the toggle starts fading in.
+const REVEAL_FADE_START = 0;
+// Scroll-Y where the toggle is fully opaque.
+const REVEAL_FADE_END = 30;
+// Scroll-Y at which physics mode flips to lined mode (emojis snap into a row).
+const MODE_THRESHOLD = 100;
+// Debounce (ms) before committing the mode flip after crossing the threshold.
+const MODE_FLIP_DEBOUNCE_MS = 220;
+// ────────────────────────────────────────────────────────────────────────────
+
 const SubheadingGroup = forwardRef<HTMLDivElement>(function SubheadingGroup(_props, ref) {
   return (
     <div
@@ -134,16 +149,19 @@ export default function Hero() {
       if (!heading || !subheading) return;
       const headingHeight = heading.getBoundingClientRect().height;
       const toggleHeight = toggle ? toggle.getBoundingClientRect().height : 51;
-      const visualBlockHeight = toggleHeight + 70 + belowLineExtent;
+      // 90 mirrors the marginTop on lineTargetRef in HeroDemo.tsx (toggle → emoji-center gap). Keep in sync.
+      const visualBlockHeight = toggleHeight + 90 + belowLineExtent;
       const subheadingHeight = subheading.getBoundingClientRect().height;
       // Top padding centers the heading vertically between the section top (y = nav height = 74) and the
       // sticky subheading's top when scrolled to the very top (viewport.bottom - 20 - subheadingHeight).
       const visibleH = window.innerHeight - 74;
       const centeredPad = Math.max(40, (visibleH - subheadingHeight - 20 - headingHeight) / 2);
       setHeadingTopPad(centeredPad);
-      // Section min height ensures sticky's natural-flow rest position is exactly 40px below the labels:
-      // headingTopPad + heading + 40 + visualBlock + 40 + subheading + 80 (bottom padding).
-      setHeroMinHeight(centeredPad + headingHeight + 40 + visualBlockHeight + 40 + subheadingHeight + 80);
+      // Section min height ensures sticky's natural-flow rest position is exactly BLOCK_GUTTER below the labels:
+      // headingTopPad + heading + BLOCK_GUTTER + visualBlock + BLOCK_GUTTER + subheading + 80 (bottom padding).
+      setHeroMinHeight(
+        centeredPad + headingHeight + BLOCK_GUTTER + visualBlockHeight + BLOCK_GUTTER + subheadingHeight + 80,
+      );
     };
     compute();
     window.addEventListener('resize', compute);
@@ -172,20 +190,17 @@ export default function Hero() {
     let pending: ReturnType<typeof setTimeout> | null = null;
     let lastTarget: 'physics' | 'lined' | null = null;
     const onScroll = () => {
-      const fadeStart = 40;
-      const fadeEnd = 220;
-      const modeThreshold = 260;
       const y = window.scrollY;
-      const op = Math.max(0, Math.min(1, (y - fadeStart) / (fadeEnd - fadeStart)));
+      const op = Math.max(0, Math.min(1, (y - REVEAL_FADE_START) / (REVEAL_FADE_END - REVEAL_FADE_START)));
       setRevealOpacity(op);
-      const target: 'physics' | 'lined' = y >= modeThreshold ? 'lined' : 'physics';
+      const target: 'physics' | 'lined' = y >= MODE_THRESHOLD ? 'lined' : 'physics';
       if (target === lastTarget) return;
       lastTarget = target;
       if (pending) clearTimeout(pending);
       pending = setTimeout(() => {
         setMode(target);
         pending = null;
-      }, 220);
+      }, MODE_FLIP_DEBOUNCE_MS);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -320,10 +335,10 @@ export default function Hero() {
         revealOpacity={revealOpacity}
         toggleRef={toggleRef}
         lineTargetRef={lineTargetRef}
-        style={{ position: 'relative', zIndex: 10, marginTop: 40 }}
+        style={{ position: 'relative', zIndex: 10, marginTop: BLOCK_GUTTER }}
       />
-      {/* Reserves vertical room for the emoji + label area (overlaid by EmojiPhysics) plus the 40px gap to the subheading. */}
-      <div aria-hidden style={{ height: belowLineExtent + 40 }} />
+      {/* Reserves vertical room for the emoji + label area (overlaid by EmojiPhysics) plus the BLOCK_GUTTER gap to the subheading. */}
+      <div aria-hidden style={{ height: belowLineExtent + BLOCK_GUTTER }} />
       <SubheadingGroup ref={subheadingRef} />
     </section>
   );

@@ -113,7 +113,7 @@ const HeroDemo = forwardRef<HTMLDivElement, HeroDemoProps>(function HeroDemo(
       <div
         ref={lineTargetRef}
         aria-hidden
-        style={{ marginTop: 70, height: 1, width: '100%' }}
+        style={{ marginTop: 90, height: 1, width: '100%' }}
       />
     </div>
   );
