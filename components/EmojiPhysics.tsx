@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useMemo, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, useMemo, type CSSProperties, type RefObject } from 'react';
 
 type Body = {
   id: number;
@@ -12,7 +12,10 @@ type Body = {
   vy: number;
   rot: number;
   vr: number;
+  scale: number;
 };
+
+type Mode = 'physics' | 'lined';
 
 type Props = {
   assets: string[];
@@ -24,6 +27,8 @@ type Props = {
   bounce?: number;
   seed?: number;
   zIndex?: number;
+  mode?: Mode;
+  lineTargetRef?: RefObject<HTMLElement | null>;
 };
 
 export default function EmojiPhysics({
@@ -36,6 +41,8 @@ export default function EmojiPhysics({
   bounce = 1,
   seed = 1,
   zIndex = 2,
+  mode = 'physics',
+  lineTargetRef,
 }: Props) {
   // On phones, downscale emoji sizes (and slightly reduce count) so the
   // floating physics doesn't dominate the layout. Also cap count to the
@@ -49,10 +56,38 @@ export default function EmojiPhysics({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const bodiesRef = useRef<Body[]>([]);
   const elsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const labelsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [seeded, setSeeded] = useState<Body[]>([]);
   const rafRef = useRef<number | null>(null);
   const draggingRef = useRef<{ id: number } | null>(null);
   const lastMoveRef = useRef({ x: 0, y: 0, t: 0 });
+  const modeRef = useRef<Mode>(mode);
+  const reducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    const prev = modeRef.current;
+    modeRef.current = mode;
+    if (prev === 'lined' && mode === 'physics') {
+      const bodies = bodiesRef.current;
+      for (let i = 0; i < bodies.length; i++) {
+        const b = bodies[i];
+        b.vx = (Math.random() - 0.5) * 3.5;
+        b.vy = (Math.random() - 0.5) * 3.5;
+        b.vr = (Math.random() - 0.5) * 1.5;
+      }
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => {
+      reducedMotionRef.current = mq.matches;
+    };
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   const rand = useMemo(() => {
     let s = seed;
@@ -83,6 +118,7 @@ export default function EmojiPhysics({
         vy: (rand() - 0.5) * 3.5,
         rot: (rand() - 0.5) * 30,
         vr: (rand() - 0.5) * 1.5,
+        scale: 1,
       };
     });
     bodiesRef.current = list;
@@ -99,37 +135,81 @@ export default function EmojiPhysics({
       const H = rect.height;
       const dragId = draggingRef.current?.id;
       const bodies = bodiesRef.current;
+      const currentMode = modeRef.current;
+
+      let targetY = H - 200;
+      let gap = 0;
+      let rowStart = 0;
+      let uniformSize = 0;
+      if (currentMode === 'lined') {
+        const lineEl = lineTargetRef?.current;
+        if (lineEl) {
+          const lineRect = lineEl.getBoundingClientRect();
+          targetY = lineRect.top - rect.top;
+        }
+        uniformSize = isMobile ? 64 : 110;
+        const spacing = isMobile ? 20 : 32;
+        gap = uniformSize + spacing;
+        const totalWidth = gap * Math.max(1, bodies.length) - spacing;
+        rowStart = (W - totalWidth) / 2;
+      }
+      const reduce = reducedMotionRef.current;
+      const lerp = reduce ? 1 : 0.06;
+      const rotLerp = reduce ? 1 : 0.08;
+      const scaleLerp = reduce ? 1 : 0.06;
+
       for (let i = 0; i < bodies.length; i++) {
         const b = bodies[i];
         if (b.id !== dragId) {
-          b.vy += gravity;
-          b.vx *= friction;
-          b.vy *= friction;
-          b.x += b.vx;
-          b.y += b.vy;
-          b.rot += b.vr;
-          if (b.x < 0) {
-            b.x = 0;
-            b.vx = -b.vx * bounce;
-            b.vr = b.vr * 0.9 + b.vx * 0.3;
-          }
-          if (b.x + b.size > W) {
-            b.x = W - b.size;
-            b.vx = -b.vx * bounce;
-            b.vr = b.vr * 0.9 + b.vx * 0.3;
-          }
-          if (b.y < 0) {
-            b.y = 0;
-            b.vy = -b.vy * bounce;
-          }
-          if (b.y + b.size > H) {
-            b.y = H - b.size;
-            b.vy = -b.vy * bounce;
+          if (currentMode === 'lined') {
+            const targetCenterX = rowStart + i * gap + uniformSize / 2;
+            const targetX = targetCenterX - b.size / 2;
+            const targetTopY = targetY - b.size / 2;
+            b.vx = 0;
+            b.vy = 0;
+            b.vr = 0;
+            b.x += (targetX - b.x) * lerp;
+            b.y += (targetTopY - b.y) * lerp;
+            b.rot += (0 - b.rot) * rotLerp;
+            const targetScale = uniformSize / b.size;
+            b.scale += (targetScale - b.scale) * scaleLerp;
+          } else {
+            b.vy += gravity;
+            b.vx *= friction;
+            b.vy *= friction;
+            b.x += b.vx;
+            b.y += b.vy;
+            b.rot += b.vr;
+            b.scale += (1 - b.scale) * scaleLerp;
+            if (b.x < 0) {
+              b.x = 0;
+              b.vx = -b.vx * bounce;
+              b.vr = b.vr * 0.9 + b.vx * 0.3;
+            }
+            if (b.x + b.size > W) {
+              b.x = W - b.size;
+              b.vx = -b.vx * bounce;
+              b.vr = b.vr * 0.9 + b.vx * 0.3;
+            }
+            if (b.y < 0) {
+              b.y = 0;
+              b.vy = -b.vy * bounce;
+            }
+            if (b.y + b.size > H) {
+              b.y = H - b.size;
+              b.vy = -b.vy * bounce;
+            }
           }
         }
         const node = elsRef.current[i];
         if (node) {
-          node.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg)`;
+          node.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg) scale(${b.scale})`;
+        }
+        const labelNode = labelsRef.current[i];
+        if (labelNode && currentMode === 'lined') {
+          const slotCenterX = rowStart + i * gap + uniformSize / 2;
+          const labelY = targetY + uniformSize / 2 + 14;
+          labelNode.style.transform = `translate(${slotCenterX}px, ${labelY}px)`;
         }
       }
       rafRef.current = requestAnimationFrame(tick);
@@ -240,6 +320,36 @@ export default function EmojiPhysics({
           }}
         >
           {b.asset}
+        </div>
+      ))}
+      {seeded.map((b, i) => (
+        <div
+          key={`label-${b.id}`}
+          ref={(node) => {
+            labelsRef.current[i] = node;
+          }}
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            transform: 'translate(-9999px, -9999px)',
+            fontFamily: 'var(--font-inter), Inter, sans-serif',
+            fontSize: 12,
+            fontWeight: 500,
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'var(--ink)',
+            whiteSpace: 'nowrap',
+            translate: '-50% 0',
+            opacity: mode === 'lined' ? 1 : 0,
+            transition: 'opacity 280ms cubic-bezier(0.4, 0, 0.2, 1)',
+            pointerEvents: 'none',
+            userSelect: 'none',
+            willChange: 'transform, opacity',
+          }}
+        >
+          Project {i + 1}
         </div>
       ))}
     </div>
