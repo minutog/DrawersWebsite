@@ -20,8 +20,8 @@ type HeroDemoProps = {
   mode: Mode;
   onModeChange: (m: Mode) => void;
   revealOpacity: number;
-  toggleRef: React.RefObject<HTMLDivElement | null>;
-  lineTargetRef: React.RefObject<HTMLDivElement | null>;
+  toggleRef: React.RefObject<HTMLDivElement>;
+  lineTargetRef: React.RefObject<HTMLDivElement>;
   style?: CSSProperties;
 };
 
