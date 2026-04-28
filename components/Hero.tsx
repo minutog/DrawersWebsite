@@ -44,7 +44,7 @@ const SubheadingGroup = forwardRef<HTMLDivElement>(function SubheadingGroup(_pro
         }}
       >
         A macOS interface layer that gives every project its own space. Switch projects,
-        switch worlds. Close the rest.
+        switch worlds. Designed for maximum flow state.
       </p>
       <div
         className="hero-cta-row"
@@ -140,7 +140,8 @@ export default function Hero() {
   }, []);
   // Visual block extent below lineTargetRef = emoji radius + label gap (14) + label line-height (~14).
   // Mirrors EmojiPhysics.tsx uniformSize/labels.
-  const belowLineExtent = isMobile ? 60 : 83;
+  const belowLineExtent = isMobile ? 130 : 83;
+  const toggleToEmojiGap = isMobile ? 70 : 90;
   useEffect(() => {
     const compute = () => {
       const heading = headingRef.current;
@@ -149,8 +150,7 @@ export default function Hero() {
       if (!heading || !subheading) return;
       const headingHeight = heading.getBoundingClientRect().height;
       const toggleHeight = toggle ? toggle.getBoundingClientRect().height : 51;
-      // 90 mirrors the marginTop on lineTargetRef in HeroDemo.tsx (toggle → emoji-center gap). Keep in sync.
-      const visualBlockHeight = toggleHeight + 90 + belowLineExtent;
+      const visualBlockHeight = toggleHeight + toggleToEmojiGap + belowLineExtent;
       const subheadingHeight = subheading.getBoundingClientRect().height;
       // Top padding centers the heading vertically between the section top (y = nav height = 74) and the
       // sticky subheading's top when scrolled to the very top (viewport.bottom - 20 - subheadingHeight).
@@ -176,7 +176,7 @@ export default function Hero() {
       window.removeEventListener('resize', compute);
       ros.forEach((ro) => ro.disconnect());
     };
-  }, [belowLineExtent]);
+  }, [belowLineExtent, toggleToEmojiGap]);
   useEffect(() => {
     if (document.readyState === 'complete') {
       setPageLoaded(true);

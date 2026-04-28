@@ -59,9 +59,10 @@ export default function Manifesto() {
             alignItems: 'flex-start',
             justifyContent: 'space-between',
             gap: 48,
+            flexWrap: 'wrap',
           }}
         >
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: '1 1 320px', minWidth: 0 }}>
             <p
               className="serif"
               style={{
@@ -95,11 +96,11 @@ export default function Manifesto() {
             alt="Gonzalo and Kieran, the makers of Drawers"
             style={{
               width: 340,
+              maxWidth: '100%',
               height: 'auto',
               borderRadius: 8,
               border: '1px solid rgba(26,20,12,0.08)',
               display: 'block',
-              flexShrink: 0,
             }}
           />
         </div>

@@ -48,8 +48,7 @@ export default function EmojiPhysics({
   // floating physics doesn't dominate the layout. Also cap count to the
   // number of unique assets so emojis never repeat.
   const isMobile = useIsMobile();
-  const requested = isMobile ? Math.max(4, Math.round(countProp * 0.7)) : countProp;
-  const count = Math.min(requested, assets.length);
+  const count = Math.min(countProp, assets.length);
   const minSize = isMobile ? Math.round(minSizeProp * 0.5) : minSizeProp;
   const maxSize = isMobile ? Math.round(maxSizeProp * 0.5) : maxSizeProp;
 
@@ -161,16 +160,21 @@ export default function EmojiPhysics({
       let gap = 0;
       let rowStart = 0;
       let uniformSize = 0;
+      let cols = bodies.length;
+      let rowGap = 0;
       if (currentMode === 'lined') {
         const lineEl = lineTargetRef?.current;
         if (lineEl) {
           const lineRect = lineEl.getBoundingClientRect();
           targetY = lineRect.top - rect.top;
         }
-        uniformSize = isMobile ? 64 : 110;
-        const spacing = isMobile ? 20 : 32;
+        uniformSize = isMobile ? 48 : 110;
+        const spacing = isMobile ? 28 : 32;
+        cols = isMobile ? Math.ceil(bodies.length / 2) : bodies.length;
+        const rowSpacing = isMobile ? 36 : 0;
+        rowGap = uniformSize + rowSpacing;
         gap = uniformSize + spacing;
-        const totalWidth = gap * Math.max(1, bodies.length) - spacing;
+        const totalWidth = gap * Math.max(1, cols) - spacing;
         rowStart = (W - totalWidth) / 2;
       }
       const reduce = reducedMotionRef.current;
@@ -182,9 +186,12 @@ export default function EmojiPhysics({
         const b = bodies[i];
         if (b.id !== dragId) {
           if (currentMode === 'lined') {
-            const targetCenterX = rowStart + i * gap + uniformSize / 2;
+            const col = i % cols;
+            const row = Math.floor(i / cols);
+            const targetCenterX = rowStart + col * gap + uniformSize / 2;
+            const targetCenterY = targetY + row * rowGap;
             const targetX = targetCenterX - b.size / 2;
-            const targetTopY = targetY - b.size / 2;
+            const targetTopY = targetCenterY - b.size / 2;
             b.vx = 0;
             b.vy = 0;
             b.vr = 0;
@@ -232,8 +239,10 @@ export default function EmojiPhysics({
         const labelNode = labelsRef.current[i];
         if (labelNode) {
           if (currentMode === 'lined') {
-            const slotCenterX = rowStart + i * gap + uniformSize / 2;
-            const labelY = targetY + uniformSize / 2 + 14;
+            const col = i % cols;
+            const row = Math.floor(i / cols);
+            const slotCenterX = rowStart + col * gap + uniformSize / 2;
+            const labelY = targetY + row * rowGap + uniformSize / 2 + 14;
             labelNode.style.transform = `translate(${slotCenterX}px, ${labelY}px)`;
             const isActive = i === activeIndexRef.current;
             const targetLabelOpacity = isActive ? 1 : 0.35;
@@ -253,11 +262,14 @@ export default function EmojiPhysics({
           const padX = 10;
           const padY = 6;
           const labelLineHeight = 14 + 14;
-          const slotCenterX = rowStart + idx * gap + uniformSize / 2;
+          const col = idx % cols;
+          const row = Math.floor(idx / cols);
+          const slotCenterX = rowStart + col * gap + uniformSize / 2;
+          const slotCenterY = targetY + row * rowGap;
           const targetW = uniformSize + padX * 2;
           const targetH = uniformSize + labelLineHeight + padY * 2;
           const targetX = slotCenterX - targetW / 2;
-          const targetTopY = targetY - uniformSize / 2 - padY;
+          const targetTopY = slotCenterY - uniformSize / 2 - padY;
           const pos = highlightPosRef.current;
           if (!pos.init) {
             pos.x = targetX;
@@ -424,9 +436,9 @@ export default function EmojiPhysics({
             top: 0,
             transform: 'translate(-9999px, -9999px)',
             fontFamily: 'var(--font-inter), Inter, sans-serif',
-            fontSize: 12,
+            fontSize: isMobile ? 9 : 12,
             fontWeight: 500,
-            letterSpacing: '0.22em',
+            letterSpacing: isMobile ? '0.08em' : '0.22em',
             textTransform: 'uppercase',
             color: 'var(--ink)',
             whiteSpace: 'nowrap',

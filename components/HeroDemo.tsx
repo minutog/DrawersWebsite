@@ -1,8 +1,20 @@
 'use client';
 
-import { forwardRef, type CSSProperties } from 'react';
+import { forwardRef, useEffect, useState, type CSSProperties } from 'react';
 
 type Mode = 'physics' | 'lined';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 760px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return isMobile;
+}
 
 type HeroDemoProps = {
   mode: Mode;
@@ -17,6 +29,10 @@ const HeroDemo = forwardRef<HTMLDivElement, HeroDemoProps>(function HeroDemo(
   { mode, onModeChange, revealOpacity, toggleRef, lineTargetRef, style },
   wrapperRef,
 ) {
+  const isMobile = useIsMobile();
+  const buttonPadding = isMobile ? '8px 14px' : '12px 22px';
+  const buttonFontSize = isMobile ? 12 : 14;
+  const lineMarginTop = isMobile ? 70 : 90;
   return (
     <div
       ref={wrapperRef}
@@ -69,9 +85,9 @@ const HeroDemo = forwardRef<HTMLDivElement, HeroDemoProps>(function HeroDemo(
             position: 'relative',
             zIndex: 1,
             flex: 1,
-            padding: '12px 22px',
+            padding: buttonPadding,
             borderRadius: 999,
-            fontSize: 14,
+            fontSize: buttonFontSize,
             fontWeight: 500,
             border: 'none',
             cursor: 'pointer',
@@ -93,9 +109,9 @@ const HeroDemo = forwardRef<HTMLDivElement, HeroDemoProps>(function HeroDemo(
             position: 'relative',
             zIndex: 1,
             flex: 1,
-            padding: '12px 22px',
+            padding: buttonPadding,
             borderRadius: 999,
-            fontSize: 14,
+            fontSize: buttonFontSize,
             fontWeight: 500,
             border: 'none',
             cursor: 'pointer',
@@ -113,7 +129,7 @@ const HeroDemo = forwardRef<HTMLDivElement, HeroDemoProps>(function HeroDemo(
       <div
         ref={lineTargetRef}
         aria-hidden
-        style={{ marginTop: 90, height: 1, width: '100%' }}
+        style={{ marginTop: lineMarginTop, height: 1, width: '100%' }}
       />
     </div>
   );
