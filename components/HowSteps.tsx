@@ -15,27 +15,23 @@ const steps = [
     shotLabel: 'Screenshot · close-up',
     shotNotes:
       'CLOSE-UP on a drawer\'s dock — show NATIVE thumbnails (not app icons):\n• A real Figma file preview with a readable filename\n• A Google Doc with the title "Atlas GTM plan v3"\n• A person avatar with a presence dot\n• A Slack channel chip "#atlas-launch · 4"\n• A Loom thumbnail with duration 02:14\nCallouts: "file, not app · channel, not workspace · person, not app".',
+    media: '/how-2-artifacts.mp4',
   },
   {
-    t: 'Drag anything into a drawer.',
-    b: 'A file, a person, a chat, an app, a link. It renders in native form — doc thumbnails, avatars, chat previews — not an abstract icon.',
+    t: 'What happens in a drawer stays in a drawer.',
+    b: 'Need Chrome for 3 projects? Don\'t mix up your tabs. Drawers integrates with your applications so that you get a fresh window in each drawer.',
     shotLabel: 'Video loop · 6s',
     shotNotes:
       "VIDEO LOOP (~6s):\n1) Cursor drags a .fig file from Finder onto the drawer edge. Drawer glows softly. File appears as a live thumbnail inside the dock.\n2) Cursor drags a person's avatar from Messages onto the drawer. Same behaviour — avatar joins the dock with a presence dot.\n3) Loop back to start.",
+    media: '/how-3-new-window.mp4',
   },
   {
-    t: 'Conscious switching.',
-    b: 'Menu bar click or three-finger swipe. Friction is a feature — it gives you a beat to decide whether you really meant to leave this drawer.',
+    t: 'Swipe to switch.',
+    b: 'A simple three-finger swipe switches between projects. Or, select your project from the menu bar. Drawers manages macOS spaces for you, so you can be sure there\'s a drawer for each project',
     shotLabel: 'Video loop · 4s',
     shotNotes:
       'VIDEO LOOP (~4s), POV of the menubar:\n• User clicks the drawer chip in the menubar. A panel opens listing three drawers with their colors.\n• User hovers "Personal." A subtle 0.4s delay plays + a small "switching..." animation before the desktop actually changes.\nOverlay caption at the end: "friction, on purpose."',
-  },
-  {
-    t: 'Drawer Hub for discovery.',
-    b: "Search across every drawer. Get recommendations — 'you usually open this Figma file with this Slack channel' — and add them to the right drawer in one click.",
-    shotLabel: 'Screenshot · command palette',
-    shotNotes:
-      'COMMAND-PALETTE-STYLE OVERLAY:\n• Search input at top, user has typed "atlas"\n• Three grouped result sections: Artifacts, People, Recommended for "Atlas launch" drawer\n• Each result shows a native thumbnail + "+ add to drawer" action on hover\n• Keyboard hints at bottom: ↑↓ navigate · ↵ open · ⌘↵ add to drawer.',
+    media: '/how-4-swipe.mov',
   },
 ];
 
