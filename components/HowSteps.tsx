@@ -18,7 +18,7 @@ const steps = [
     media: '/how-2-artifacts.mp4',
   },
   {
-    t: 'What happens in a drawer stays in a drawer.',
+    t: 'A new window for each drawer.',
     b: 'Need Chrome for 3 projects? Don\'t mix up your tabs. Drawers integrates with your applications so that you get a fresh window in each drawer.',
     shotLabel: 'Video loop · 6s',
     shotNotes:
