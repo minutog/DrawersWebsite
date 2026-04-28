@@ -26,7 +26,7 @@ export default function Manifesto() {
           <span className="ital" style={{ color: 'var(--accent)' }}>
             exhausted
           </span>{' '}
-          without remembering what we&rsquo;d actually done.
+         from context switching and constant distraction.
         </p>
         <p
           style={{
@@ -36,9 +36,8 @@ export default function Manifesto() {
             marginTop: 24,
           }}
         >
-          The research is clear: the brain budgets energy by predicting what&rsquo;s next.
-          Every task switch forces a fresh prediction. A day of fragmented work drains
-          that budget long before the actual work does.
+          The research is clear: people love being in the flow.
+            But normal macOS doesn't invite flow; it forces distraction and work fragmentation.
         </p>
         <p
           style={{
@@ -49,26 +48,60 @@ export default function Manifesto() {
           }}
         >
           Existing tools treat symptoms. Focus modes nag, site blockers fight, Pomodoros
-          count. None of them fix the thing underneath — that your OS sees every file and
-          every app and every distraction as equal weight, floating on a single
-          undifferentiated plane.
+          count. None of them fix the thing underneath — that your OS doesn't know your projects, and can't
+          help you get and stay in the flow.
         </p>
-        <p
-          className="serif"
+
+        <div
           style={{
-            fontSize: 'clamp(22px, 2.4vw, 30px)',
-            lineHeight: 1.25,
             marginTop: 48,
-            fontStyle: 'italic',
-            fontWeight: 400,
-            textWrap: 'balance',
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: 48,
           }}
         >
-          We don&rsquo;t want to make you more productive. We want to give you back the
-          feeling of closing a drawer and knowing the rest of the world can wait.
-        </p>
-        <div className="mono-label" style={{ marginTop: 40 }}>
-          — the Drawers team · a small studio in Toronto
+          <div style={{ flex: 1 }}>
+            <p
+              className="serif"
+              style={{
+                fontSize: 'clamp(22px, 2.4vw, 30px)',
+                lineHeight: 1.25,
+                margin: 0,
+                fontStyle: 'italic',
+                fontWeight: 400,
+                textWrap: 'balance',
+              }}
+            >
+              We don&rsquo;t want to make you more productive.
+              We want to get you in the{' '}
+              <span className="ital" style={{ color: 'var(--accent)' }}>
+                flow
+              </span>{' '}
+              so you can feel more alive!
+            </p>
+            <div
+              className="serif"
+              style={{ fontStyle: 'italic', fontSize: 22, lineHeight: 1.2, marginTop: 32 }}
+            >
+              — Gonzalo &amp; Kieran
+            </div>
+            <div className="mono-label" style={{ marginTop: 6 }}>
+                Creators of Drawers
+            </div>
+          </div>
+          <img
+            src="/makers.jpeg"
+            alt="Gonzalo and Kieran, the makers of Drawers"
+            style={{
+              width: 340,
+              height: 'auto',
+              borderRadius: 8,
+              border: '1px solid rgba(26,20,12,0.08)',
+              display: 'block',
+              flexShrink: 0,
+            }}
+          />
         </div>
       </div>
     </section>

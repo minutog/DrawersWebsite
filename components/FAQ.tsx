@@ -1,27 +1,19 @@
 const qs = [
   {
     q: 'Is this a launcher? A desktop manager? A new Mission Control?',
-    a: "None of those. Drawers is an interface layer on top of macOS — it uses Apple's existing APIs (Spaces, menubar, Dock extensions) and coordinates them around projects. Nothing is replaced; it's additive.",
+    a: "None of those. Drawers is an interface layer on top of macOS — it uses Apple's existing APIs (Spaces, menubar) and coordinates them around projects. Nothing is replaced; it's additive.",
   },
   {
-    q: 'Does it work with [app]?',
-    a: "Yes. Drawers doesn't integrate with apps — it organizes access to them. If the app runs on macOS and has files, links, or channels, it can live in a drawer.",
+    q: 'Does it work with my apps?',
+    a: "Yes. If the app runs on macOS and has files, links, or channels, it can live in a drawer.",
   },
   {
-    q: 'What does it cost?',
-    a: 'Free during private beta. At public launch, a one-time purchase with optional sync. No subscriptions.',
-  },
-  {
-    q: 'Why is switching slow on purpose?',
-    a: 'Because cheap switching is the whole problem. A half-second of intentionality stops the reflexive jump that fragments your day.',
+    q: 'Is it free?',
+    a: 'Yes!',
   },
   {
     q: 'Is my data safe?',
-    a: 'Drawers is local-first. Everything lives in ~/Library on your Mac. If you turn on iCloud sync, it uses your private iCloud container — we never see it.',
-  },
-  {
-    q: 'macOS only?',
-    a: 'For now, yes. Linux is on the wish list. Windows would take longer because its window model is fundamentally different.',
+    a: 'Drawers is local-first. Everything lives on your Mac.',
   },
 ];
 

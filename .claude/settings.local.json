@@ -48,7 +48,8 @@
       "Bash(mv -f \"Slide 4_3 - 1.png\" why-01-fragmented.png)",
       "Bash(mv -f \"Slide 4_3 - 2.png\" why-02-bleed.png)",
       "Bash(mv -f \"Slide 4_3 - 3.png\" why-03-distraction.png)",
-      "Bash(awk 'NR>=140 && NR<=160 { printf \"%d: %s\\\\n\", NR, $0 }' /Users/kparikh/Developer/DrawersWebsite/components/Hero.tsx)"
+      "Bash(awk 'NR>=140 && NR<=160 { printf \"%d: %s\\\\n\", NR, $0 }' /Users/kparikh/Developer/DrawersWebsite/components/Hero.tsx)",
+      "Bash(xargs ls *)"
     ]
   }
 }

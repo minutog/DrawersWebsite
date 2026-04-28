@@ -77,7 +77,7 @@ export default function HowSteps() {
             >
               <div style={{ direction: 'ltr' }}>
                 <div className="mono-label" style={{ color: 'var(--accent)' }}>
-                  Step {String(i + 1).padStart(2, '0')} / 05
+                  Step {String(i + 1).padStart(2, '0')} / 04
                 </div>
                 <h3
                   className="serif"
