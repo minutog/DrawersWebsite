@@ -3,7 +3,7 @@ export default function Distraction() {
     <section
       id="demo"
       style={{
-        padding: '140px 64px 160px',
+        padding: '80px 64px 160px',
         background: 'var(--paper-warm)',
         scrollMarginTop: 80,
       }}

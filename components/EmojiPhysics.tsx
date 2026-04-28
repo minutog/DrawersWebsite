@@ -57,12 +57,16 @@ export default function EmojiPhysics({
   const bodiesRef = useRef<Body[]>([]);
   const elsRef = useRef<(HTMLDivElement | null)[]>([]);
   const labelsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const highlightRef = useRef<HTMLDivElement | null>(null);
   const [seeded, setSeeded] = useState<Body[]>([]);
   const rafRef = useRef<number | null>(null);
   const draggingRef = useRef<{ id: number } | null>(null);
   const lastMoveRef = useRef({ x: 0, y: 0, t: 0 });
   const modeRef = useRef<Mode>(mode);
   const reducedMotionRef = useRef(false);
+  const activeIndexRef = useRef(0);
+  const highlightVisRef = useRef(0);
+  const highlightPosRef = useRef({ x: 0, y: 0, w: 0, h: 0, init: false });
 
   useEffect(() => {
     const prev = modeRef.current;
@@ -76,6 +80,22 @@ export default function EmojiPhysics({
         b.vr = (Math.random() - 0.5) * 1.5;
       }
     }
+  }, [mode]);
+
+  useEffect(() => {
+    if (mode !== 'lined') return;
+    const start = setTimeout(() => {
+      activeIndexRef.current = 0;
+    }, 0);
+    const id = setInterval(() => {
+      const len = bodiesRef.current.length;
+      if (!len) return;
+      activeIndexRef.current = (activeIndexRef.current + 1) % len;
+    }, 1500);
+    return () => {
+      clearTimeout(start);
+      clearInterval(id);
+    };
   }, [mode]);
 
   useEffect(() => {
@@ -204,12 +224,65 @@ export default function EmojiPhysics({
         const node = elsRef.current[i];
         if (node) {
           node.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg) scale(${b.scale})`;
+          const isActive = currentMode === 'lined' && i === activeIndexRef.current;
+          const targetOpacity = currentMode === 'lined' ? (isActive ? 1 : 0.35) : 1;
+          const currentOpacity = parseFloat(node.style.opacity || '1');
+          node.style.opacity = String(currentOpacity + (targetOpacity - currentOpacity) * 0.1);
         }
         const labelNode = labelsRef.current[i];
-        if (labelNode && currentMode === 'lined') {
-          const slotCenterX = rowStart + i * gap + uniformSize / 2;
-          const labelY = targetY + uniformSize / 2 + 14;
-          labelNode.style.transform = `translate(${slotCenterX}px, ${labelY}px)`;
+        if (labelNode) {
+          if (currentMode === 'lined') {
+            const slotCenterX = rowStart + i * gap + uniformSize / 2;
+            const labelY = targetY + uniformSize / 2 + 14;
+            labelNode.style.transform = `translate(${slotCenterX}px, ${labelY}px)`;
+            const isActive = i === activeIndexRef.current;
+            const targetLabelOpacity = isActive ? 1 : 0.35;
+            const currentLabelOpacity = parseFloat(labelNode.style.opacity || '0');
+            labelNode.style.opacity = String(currentLabelOpacity + (targetLabelOpacity - currentLabelOpacity) * 0.1);
+          } else {
+            const currentLabelOpacity = parseFloat(labelNode.style.opacity || '0');
+            labelNode.style.opacity = String(currentLabelOpacity + (0 - currentLabelOpacity) * 0.15);
+          }
+        }
+      }
+
+      const highlightNode = highlightRef.current;
+      if (highlightNode) {
+        if (currentMode === 'lined') {
+          const idx = activeIndexRef.current;
+          const padX = 10;
+          const padY = 6;
+          const labelLineHeight = 14 + 14;
+          const slotCenterX = rowStart + idx * gap + uniformSize / 2;
+          const targetW = uniformSize + padX * 2;
+          const targetH = uniformSize + labelLineHeight + padY * 2;
+          const targetX = slotCenterX - targetW / 2;
+          const targetTopY = targetY - uniformSize / 2 - padY;
+          const pos = highlightPosRef.current;
+          if (!pos.init) {
+            pos.x = targetX;
+            pos.y = targetTopY;
+            pos.w = targetW;
+            pos.h = targetH;
+            pos.init = true;
+          } else {
+            const k = 0.18;
+            pos.x += (targetX - pos.x) * k;
+            pos.y += (targetTopY - pos.y) * k;
+            pos.w += (targetW - pos.w) * k;
+            pos.h += (targetH - pos.h) * k;
+          }
+          highlightVisRef.current += (1 - highlightVisRef.current) * 0.1;
+          highlightNode.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+          highlightNode.style.width = `${pos.w}px`;
+          highlightNode.style.height = `${pos.h}px`;
+          highlightNode.style.opacity = String(highlightVisRef.current);
+        } else {
+          highlightVisRef.current += (0 - highlightVisRef.current) * 0.15;
+          highlightNode.style.opacity = String(highlightVisRef.current);
+          if (highlightVisRef.current < 0.01) {
+            highlightPosRef.current.init = false;
+          }
         }
       }
       rafRef.current = requestAnimationFrame(tick);
@@ -290,6 +363,22 @@ export default function EmojiPhysics({
 
   return (
     <div ref={containerRef} style={containerStyle}>
+      <div
+        ref={highlightRef}
+        aria-hidden
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: 0,
+          height: 0,
+          border: '1.5px solid var(--ink)',
+          borderRadius: 18,
+          opacity: 0,
+          pointerEvents: 'none',
+          willChange: 'transform, width, height, opacity',
+        }}
+      />
       {seeded.map((b, i) => (
         <div
           key={b.id}
@@ -342,8 +431,7 @@ export default function EmojiPhysics({
             color: 'var(--ink)',
             whiteSpace: 'nowrap',
             translate: '-50% 0',
-            opacity: mode === 'lined' ? 1 : 0,
-            transition: 'opacity 280ms cubic-bezier(0.4, 0, 0.2, 1)',
+            opacity: 0,
             pointerEvents: 'none',
             userSelect: 'none',
             willChange: 'transform, opacity',
