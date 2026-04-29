@@ -24,11 +24,27 @@ const fraunces = Fraunces({
   variable: '--font-fraunces',
 });
 
+const title = 'Drawers — Flow without distractions';
+const description =
+  'A macOS interface layer that gives every project its own space. Switch projects, switch worlds. Close the rest.';
+
 export const metadata: Metadata = {
-  title: 'Drawers — Flow without distractions',
-  description:
-    'A macOS interface layer that gives every project its own space. Switch projects, switch worlds. Close the rest.',
+  metadataBase: new URL('https://drawers.computer'),
+  title,
+  description,
   icons: { icon: '/favicon.png' },
+  openGraph: {
+    type: 'website',
+    title,
+    description,
+    siteName: 'Drawers',
+    url: 'https://drawers.computer',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+  },
 };
 
 export const viewport: Viewport = {
