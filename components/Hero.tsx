@@ -3,6 +3,7 @@
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import EmojiPhysics, { EMOJIS } from './EmojiPhysics';
 import HeroDemo from './HeroDemo';
+import { DOWNLOAD_URL } from '../lib/constants';
 
 // ─── Tunable knobs ──────────────────────────────────────────────────────────
 // Vertical spacing above the toggle (heading → toggle) and below the labels
@@ -58,7 +59,7 @@ const SubheadingGroup = forwardRef<HTMLDivElement>(function SubheadingGroup(_pro
       >
         <a
           className="download-desktop"
-          href="https://wwwkieran.github.io/DrawersReleases/Drawers.dmg"
+          href={DOWNLOAD_URL}
           style={{
             fontSize: 15,
             fontWeight: 500,

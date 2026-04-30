@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { DOWNLOAD_URL } from '../lib/constants';
 
 const APPS_SCRIPT_ENDPOINT =
   'https://script.google.com/macros/s/AKfycbx8i-Om1UcBBqiHQSE9zu9luzWF9z3Fceo-ssA3196iouvjc0ZQdJIuuh3lZdfyoPmNYg/exec';
@@ -111,7 +112,7 @@ export default function EmailForm() {
         <div className="mono-label" style={{ marginTop: 16 }}>
           Or grab the .dmg directly:{' '}
           <a
-            href="https://wwwkieran.github.io/DrawersReleases/Drawers.dmg"
+            href={DOWNLOAD_URL}
             style={{ color: 'var(--accent)' }}
           >
             Drawers.dmg ↓
@@ -190,7 +191,7 @@ export default function EmailForm() {
         >
           Something went wrong — try the direct{' '}
           <a
-            href="https://wwwkieran.github.io/DrawersReleases/Drawers.dmg"
+            href={DOWNLOAD_URL}
             style={{ color: 'var(--accent)' }}
           >
             Drawers.dmg

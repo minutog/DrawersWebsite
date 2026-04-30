@@ -35,5 +35,5 @@ out/                Built static site (committed)
 ## Notes
 
 - Email capture posts to a Google Apps Script via a hidden iframe (the endpoint doesn't return CORS headers, so `fetch` doesn't work). A formsubmit.co fallback handles the case where the iframe never loads.
-- Download CTA links to `https://wwwkieran.github.io/DrawersReleases/Drawers.dmg`.
+- Download CTA links to `https://download.drawers.computer/Drawers.dmg` (defined once in `lib/constants.ts`).
 - Emoji physics use unicode glyphs rendered with the OS color emoji font; layout uses `requestAnimationFrame` with direct DOM transform writes (no per-frame React state).

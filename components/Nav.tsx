@@ -1,3 +1,5 @@
+import { DOWNLOAD_URL } from '../lib/constants';
+
 export default function Nav() {
   return (
     <nav
@@ -28,7 +30,7 @@ export default function Nav() {
       </div>
       <a
         className="download-desktop"
-        href="https://wwwkieran.github.io/DrawersReleases/Drawers.dmg"
+        href={DOWNLOAD_URL}
         style={{
           fontSize: 14,
           fontWeight: 500,

@@ -3,7 +3,7 @@ const CONFIG = {
   sheetName: "Drawers Mobile Leads",
   fromName: "Drawers",
   replyTo: "gonzalominuto@gmail.com",
-  downloadUrl: "https://wwwkieran.github.io/DrawersReleases/DrawersDock.dmg",
+  downloadUrl: "https://download.drawers.computer/Drawers.dmg",
   emailSubject: "Your Drawers download link",
 };
 

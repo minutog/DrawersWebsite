@@ -1,6 +1,7 @@
 import EmojiPhysics, { EMOJIS } from './EmojiPhysics';
 import SendToOtherComputer from './SendToOtherComputer';
 import SendToComputer from './SendToComputer';
+import { DOWNLOAD_URL } from '../lib/constants';
 
 export default function Download() {
   return (
@@ -58,7 +59,7 @@ export default function Download() {
         </h2>
         <div className="download-desktop" style={{ marginTop: 56, pointerEvents: 'auto' }}>
           <a
-            href="https://wwwkieran.github.io/DrawersReleases/Drawers.dmg"
+            href={DOWNLOAD_URL}
             style={{
               display: 'inline-block',
               fontSize: 17,
