@@ -16,7 +16,7 @@ export default function Page() {
       <Distraction />
       <Why />
       <HowSteps />
-      <Aliveness />
+      {/*<Aliveness />*/}
       <Manifesto />
       <FAQ />
       <Download />

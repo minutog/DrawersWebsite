@@ -49,7 +49,7 @@ export default function Manifesto() {
         >
           Existing tools treat symptoms. Focus modes nag, site blockers fight, Pomodoros
           count. None of them fix the thing underneath — that your OS doesn't know your projects, and can't
-          help you get and stay in the flow.
+          help you get and stay in the flow. Distraction isn’t a willpower problem; it’s a surface-area problem. The fix is structural: shrink what’s in front of you to just this project.
         </p>
 
         <div

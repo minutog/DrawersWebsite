@@ -11,7 +11,7 @@ const steps = [
   },
   {
     t: 'Artifacts, not apps.',
-    b: "Don't shortcut to Figma — shortcut to the one Figma file that matters. Not Slack, the #atlas-launch channel. Not Drive, the brief doc. Searching for resources invites distraction. Drawers keeps what you need right at your fingertips.",
+    b: "Don't shortcut to Figma — shortcut to the one Figma file that matters. A single channel instead of all of Slack. Three files instead of your whole Documents folder. Searching for resources invites distraction. Drawers keeps what you need right at your fingertips.",
     shotLabel: 'Screenshot · close-up',
     shotNotes:
       'CLOSE-UP on a drawer\'s dock — show NATIVE thumbnails (not app icons):\n• A real Figma file preview with a readable filename\n• A Google Doc with the title "Atlas GTM plan v3"\n• A person avatar with a presence dot\n• A Slack channel chip "#atlas-launch · 4"\n• A Loom thumbnail with duration 02:14\nCallouts: "file, not app · channel, not workspace · person, not app".',
@@ -19,7 +19,7 @@ const steps = [
   },
   {
     t: 'A new window for each drawer.',
-    b: 'Need Chrome for 3 projects? Don\'t mix up your tabs. Drawers integrates with your applications so that you get a fresh window in each drawer.',
+    b: 'Need Chrome for three projects? In normal macOS, clicking Chrome from a new Space yanks you back to where it was already open — one window, all your tabs interleaved. The same thing happens with every app: Slack, your editor, Notes. Drawers gives each drawer its own window of every app, scoped to that project.',
     shotLabel: 'Video loop · 6s',
     shotNotes:
       "VIDEO LOOP (~6s):\n1) Cursor drags a .fig file from Finder onto the drawer edge. Drawer glows softly. File appears as a live thumbnail inside the dock.\n2) Cursor drags a person's avatar from Messages onto the drawer. Same behaviour — avatar joins the dock with a presence dot.\n3) Loop back to start.",

@@ -85,8 +85,26 @@ export default function Why() {
         >
           You do, though. Your projects
           live in the only place macOS can&rsquo;t see: your head. Every app
-          mixes them. Every notification interrupts them. The interface treats
-          them as equals. Focus modes don&rsquo;t fix it.{' '}
+          mixes them. Distraction isn&rsquo;t a willpower problem — it&rsquo;s
+          a surface-area problem: the more apps, tabs, and channels in front
+          of you, the more there is to pull you away.
+        </p>
+        <p
+          style={{
+            fontSize: 22,
+            lineHeight: 1.5,
+            marginTop: 24,
+            maxWidth: 820,
+            color: 'var(--ink-soft)',
+          }}
+        >
+          And{' '}
+          <strong style={{ fontWeight: 600, color: 'var(--ink)' }}>
+            Spaces won&rsquo;t save you
+          </strong>
+          {' '}— macOS ties apps to spaces, not projects to spaces, so clicking
+          an app from a new Space yanks you back to where it was already open.
+          Focus modes don&rsquo;t fix it either.{' '}
           <span className="ital" style={{ color: 'var(--ink)' }}>
             That&rsquo;s a structural problem.
           </span>
