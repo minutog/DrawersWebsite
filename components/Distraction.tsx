@@ -29,27 +29,21 @@ export default function Distraction() {
           <span style={{ color: 'var(--accent)' }}>Nothing</span> else in the way.
         </h2>
 
-        <div className="distraction-row">
-          <div id="demo-video" className="distraction-video" style={{ scrollMarginBottom: 20 }}>
-            <video
-              src="/DrawersTheMovie.mov"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                display: 'block',
-              }}
-            />
-          </div>
-          <p className="distraction-copy">
-            Every project gets its own dock, space, and set of artifacts.
-            Switch projects, switch worlds.
-          </p>
+        <div id="demo-video" className="distraction-video" style={{ scrollMarginBottom: 20 }}>
+          <video
+            src="/WhatIsADrawer_2.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
         </div>
       </div>
     </section>

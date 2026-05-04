@@ -71,31 +71,16 @@ a { color: inherit; }
 .download-mobile { display: none; }
 .download-desktop { display: block; }
 
-/* Distraction (#demo) — video left, copy right of video, both responsive. */
-.distraction-row {
-  display: flex;
-  align-items: center;
-  gap: clamp(28px, 4vw, 64px);
-  width: 100%;
-  text-align: left;
-}
+/* Distraction (#demo) — video centered, sized to keep heading visible above. */
 .distraction-video {
-  flex: 1 1 0;
-  min-width: 0;
-  max-width: 970px;
+  margin-inline: auto;
+  width: 100%;
+  max-width: min(1280px, calc((100vh - 375px) * 1660 / 1080));
   border-radius: 18px;
   overflow: hidden;
   background: #0d0906;
-  aspect-ratio: 960 / 620;
+  aspect-ratio: 1660 / 1080;
   filter: drop-shadow(0 30px 40px rgba(26,20,12,0.18));
-}
-.distraction-copy {
-  flex: 0 1 360px;
-  font-size: 21px;
-  line-height: 1.5;
-  color: var(--ink-soft);
-  margin: 0;
-  text-wrap: pretty;
 }
 
 /* ─────────────────────────────────────────────────────────────────────
@@ -134,8 +119,7 @@ a { color: inherit; }
   /* distraction (#demo) */
   #demo { padding-top: 60px !important; padding-bottom: 70px !important; }
   #demo h2 { font-size: 44px !important; line-height: 0.98 !important; }
-  #demo .distraction-row { flex-direction: column !important; gap: 32px !important; }
-  #demo .distraction-copy { flex: none !important; font-size: 16px !important; text-align: center !important; }
+  #demo .distraction-video { max-width: 100% !important; }
 
   /* why */
   #why { padding-top: 70px !important; padding-bottom: 80px !important; }
