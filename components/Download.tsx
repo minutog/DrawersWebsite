@@ -92,7 +92,7 @@ export default function Download() {
             pointerEvents: 'auto',
           }}
         >
-          <span>Drawers · Toronto, ON</span>
+          <span>Drawers · Cambridge, MA</span>
           <span>@drawers.computer</span>
           <span>hello@drawers.computer</span>
           <span>© 2026</span>
