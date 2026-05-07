@@ -1,4 +1,10 @@
+'use client';
+
 import { DOWNLOAD_URL } from '../lib/constants';
+import {
+  trackDownloadClicked,
+  trackSendToMacIntentShown,
+} from '../lib/analytics';
 
 export default function Nav() {
   return (
@@ -31,6 +37,7 @@ export default function Nav() {
       <a
         className="download-desktop"
         href={DOWNLOAD_URL}
+        onClick={() => trackDownloadClicked('nav')}
         style={{
           fontSize: 14,
           fontWeight: 500,
@@ -47,6 +54,7 @@ export default function Nav() {
       <a
         className="download-mobile"
         href="#download"
+        onClick={() => trackSendToMacIntentShown('nav')}
         style={{
           fontSize: 14,
           fontWeight: 500,

@@ -1,6 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import {
+  trackSendToMacEmailSubmitted,
+  trackSendToMacOption,
+} from '../lib/analytics';
 
 const APPS_SCRIPT_ENDPOINT =
   'https://script.google.com/macros/s/AKfycbx8i-Om1UcBBqiHQSE9zu9luzWF9z3Fceo-ssA3196iouvjc0ZQdJIuuh3lZdfyoPmNYg/exec';
@@ -40,6 +44,7 @@ export default function SendToComputer() {
   };
 
   const handlePick = (id: OptionId) => {
+    trackSendToMacOption(id);
     if (id === 'email') {
       setPicked('email');
       return;
@@ -308,6 +313,7 @@ function EmailSheet() {
   const finishSuccess = () => {
     pendingRef.current = false;
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    trackSendToMacEmailSubmitted('success', 'mobile_sheet');
     setStatus('success');
   };
 
@@ -336,6 +342,7 @@ function EmailSheet() {
       // fall through
     }
     pendingRef.current = false;
+    trackSendToMacEmailSubmitted('error', 'mobile_sheet');
     setStatus('error');
   };
 

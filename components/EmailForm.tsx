@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { DOWNLOAD_URL } from '../lib/constants';
+import {
+  trackDownloadClicked,
+  trackSendToMacEmailSubmitted,
+} from '../lib/analytics';
 
 const APPS_SCRIPT_ENDPOINT =
   'https://script.google.com/macros/s/AKfycbx8i-Om1UcBBqiHQSE9zu9luzWF9z3Fceo-ssA3196iouvjc0ZQdJIuuh3lZdfyoPmNYg/exec';
@@ -40,6 +44,7 @@ export default function EmailForm() {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
+    trackSendToMacEmailSubmitted('success', 'desktop_other_computer');
     setStatus('success');
   };
 
@@ -72,6 +77,7 @@ export default function EmailForm() {
       // fall through to error state
     }
     pendingRef.current = false;
+    trackSendToMacEmailSubmitted('error', 'desktop_other_computer');
     setStatus('error');
   };
 
@@ -113,6 +119,7 @@ export default function EmailForm() {
           Or grab the .dmg directly:{' '}
           <a
             href={DOWNLOAD_URL}
+            onClick={() => trackDownloadClicked('email_form_success')}
             style={{ color: 'var(--accent)' }}
           >
             Drawers.dmg ↓
@@ -192,6 +199,7 @@ export default function EmailForm() {
           Something went wrong — try the direct{' '}
           <a
             href={DOWNLOAD_URL}
+            onClick={() => trackDownloadClicked('email_form_error')}
             style={{ color: 'var(--accent)' }}
           >
             Drawers.dmg

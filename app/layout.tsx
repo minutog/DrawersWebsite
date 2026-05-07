@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Fraunces, Instrument_Serif, Inter } from 'next/font/google';
 import './globals.css';
+import { PostHogProvider } from './providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -59,7 +60,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="stylesheet" href="/devices.min.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        <PostHogProvider>{children}</PostHogProvider>
+      </body>
     </html>
   );
 }

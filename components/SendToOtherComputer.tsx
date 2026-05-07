@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import EmailForm from './EmailForm';
+import { trackSendToMacOption } from '../lib/analytics';
 
 export default function SendToOtherComputer() {
   const [open, setOpen] = useState(false);
@@ -10,7 +11,13 @@ export default function SendToOtherComputer() {
     <div style={{ marginTop: 56, textAlign: 'center' }}>
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() =>
+          setOpen((v) => {
+            const next = !v;
+            if (next) trackSendToMacOption('other_computer');
+            return next;
+          })
+        }
         aria-expanded={open}
         style={{
           appearance: 'none',

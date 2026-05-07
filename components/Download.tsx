@@ -1,7 +1,7 @@
 import EmojiPhysics, { EMOJIS } from './EmojiPhysics';
 import SendToOtherComputer from './SendToOtherComputer';
 import SendToComputer from './SendToComputer';
-import { DOWNLOAD_URL } from '../lib/constants';
+import DownloadButton from './DownloadButton';
 
 export default function Download() {
   return (
@@ -58,8 +58,7 @@ export default function Download() {
           </span>
         </h2>
         <div className="download-desktop" style={{ marginTop: 56, pointerEvents: 'auto' }}>
-          <a
-            href={DOWNLOAD_URL}
+          <DownloadButton
             style={{
               display: 'inline-block',
               fontSize: 17,
@@ -73,7 +72,7 @@ export default function Download() {
             }}
           >
             ↓ Download Drawers for macOS
-          </a>
+          </DownloadButton>
           <div className="mono-label" style={{ marginTop: 18 }}>
             Free · macOS 14+ · Local-first · No account
           </div>
