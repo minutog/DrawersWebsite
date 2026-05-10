@@ -3,6 +3,8 @@
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import EmojiPhysics, { EMOJIS } from './EmojiPhysics';
 import HeroDemo from './HeroDemo';
+import HeroFlipWord from './HeroFlipWord';
+import HeroVideoSequence, { STEPS } from './HeroVideoSequence';
 import { DOWNLOAD_URL } from '../lib/constants';
 import {
   trackDownloadClicked,
@@ -24,7 +26,10 @@ const MODE_THRESHOLD = 100;
 const MODE_FLIP_DEBOUNCE_MS = 220;
 // ────────────────────────────────────────────────────────────────────────────
 
-const SubheadingGroup = forwardRef<HTMLDivElement>(function SubheadingGroup(_props, ref) {
+interface SubheadingGroupProps {
+  onWatchDemo: () => void;
+}
+const SubheadingGroup = forwardRef<HTMLDivElement, SubheadingGroupProps>(function SubheadingGroup({ onWatchDemo }, ref) {
   return (
     <div
       ref={ref}
@@ -48,7 +53,7 @@ const SubheadingGroup = forwardRef<HTMLDivElement>(function SubheadingGroup(_pro
           textWrap: 'pretty',
         }}
       >
-        A macOS interface layer that gives every project its own space. Switch projects,
+          Drawers gives every project its own dock, its own space, and its own windows. Switch projects,
         switch worlds. Designed for maximum flow state.
       </p>
       <div
@@ -99,11 +104,7 @@ const SubheadingGroup = forwardRef<HTMLDivElement>(function SubheadingGroup(_pro
         <button
           type="button"
           className="watch-demo-btn"
-          onClick={() => {
-            document
-              .getElementById('demo-video')
-              ?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-          }}
+          onClick={onWatchDemo}
           style={{
             fontSize: 15,
             fontWeight: 500,
@@ -128,16 +129,75 @@ const SubheadingGroup = forwardRef<HTMLDivElement>(function SubheadingGroup(_pro
 });
 
 export default function Hero() {
-  const [pageLoaded, setPageLoaded] = useState(false);
   const [mode, setMode] = useState<'physics' | 'lined'>('physics');
   const [revealOpacity, setRevealOpacity] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [headingTopPad, setHeadingTopPad] = useState(40);
   const [heroMinHeight, setHeroMinHeight] = useState<number | null>(null);
+  const [step, setStep] = useState(0);
+  const [row2TextHeight, setRow2TextHeight] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  // Mirrors HeroVideoSequence's `visible` state so we can fade UI elements
+  // (the "click to expand" hint) in sync with the video itself.
+  const [videoVisible, setVideoVisible] = useState(false);
+  useEffect(() => {
+    setVideoVisible(false);
+    // Same timing constants as HeroVideoSequence (FLIP_MS + HOLD_AFTER_MS).
+    const t = setTimeout(() => setVideoVisible(true), 700 + 450);
+    return () => clearTimeout(t);
+  }, [step]);
+  // If the user expands while the video is mid-hold, force-show the hint's
+  // sibling state to true (same override HeroVideoSequence does for the video).
+  useEffect(() => {
+    if (expanded) setVideoVisible(true);
+  }, [expanded]);
   const lineTargetRef = useRef<HTMLDivElement | null>(null);
   const toggleRef = useRef<HTMLDivElement | null>(null);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const subheadingRef = useRef<HTMLDivElement | null>(null);
+  const row2TextRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = row2TextRef.current;
+    if (!el) return;
+    const measure = () => setRow2TextHeight(el.getBoundingClientRect().height);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  // Close the expanded video on Escape, and lock background scroll while open.
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setExpanded(false);
+    };
+    window.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [expanded]);
+  // If the cycle advances away from the Drawers step while expanded, collapse.
+  useEffect(() => {
+    if (expanded && STEPS[step].word !== 'Drawers') setExpanded(false);
+  }, [expanded, step]);
+  // "Watch 45s demo" handler. Jump to Drawers (if not already there) and
+  // expand. HeroVideoSequence forces its `visible` flag true whenever
+  // `expanded` flips on, so the expand animation starts from a visible video
+  // even if the post-step-change fade-in hold hasn't fired yet.
+  const handleWatchDemo = () => {
+    const drawersIdx = STEPS.findIndex((s) => s.word === 'Drawers');
+    if (drawersIdx === -1) return;
+    if (step !== drawersIdx) setStep(drawersIdx);
+    setExpanded(true);
+  };
+  // Pause the cycle's auto-advance while expanded by holding the playback state
+  // is the cycle's responsibility — we do that simply by not advancing step
+  // (the watchdog is in HeroVideoSequence, but the Drawers clip is long
+  // enough that, while paused at the centered overlay, the user will close
+  // before the watchdog fires). For now, this is a non-issue.
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
     const onChange = () => setIsMobile(mq.matches);
@@ -185,15 +245,6 @@ export default function Hero() {
     };
   }, [belowLineExtent, toggleToEmojiGap]);
   useEffect(() => {
-    if (document.readyState === 'complete') {
-      setPageLoaded(true);
-      return;
-    }
-    const onLoad = () => setPageLoaded(true);
-    window.addEventListener('load', onLoad);
-    return () => window.removeEventListener('load', onLoad);
-  }, []);
-  useEffect(() => {
     let pending: ReturnType<typeof setTimeout> | null = null;
     let lastTarget: 'physics' | 'lined' | null = null;
     const onScroll = () => {
@@ -225,7 +276,6 @@ export default function Hero() {
         minHeight: heroMinHeight
           ? `max(calc(100vh - 74px), ${Math.ceil(heroMinHeight)}px)`
           : 'calc(100vh - 74px)',
-        textAlign: 'center',
       }}
     >
       <div style={{ position: 'absolute', inset: 0 }}>
@@ -239,103 +289,144 @@ export default function Hero() {
           lineTargetRef={lineTargetRef}
         />
       </div>
-      <h1
+      <div
+        className="hero-grid"
         ref={headingRef}
-        className="serif"
         style={{
           position: 'relative',
-          zIndex: 10,
+          // While the Drawers video is expanded, raise this stacking context
+          // above the dim backdrop (z-index 1000) so the video — which is at
+          // z-index 1001 *within* this context — sits over the dim layer.
+          zIndex: expanded ? 1001 : 10,
           pointerEvents: 'none',
-          fontSize: 'clamp(84px, 10.3vw, 148px)',
-          lineHeight: 1,
-          margin: 0,
+          // Top row ("A [WORD]") and the row below ("for each project" + video)
+          // both center within this content-sized block.
+          width: 'fit-content',
+          maxWidth: '100%',
           marginInline: 'auto',
-          maxWidth: 1300,
-          textAlign: 'center',
         }}
       >
-        <div className="hero-flow-line" style={{ fontSize: 'clamp(102px, 12.3vw, 176px)' }}>
-          <span className={`flow-highlight flow-highlight--off${pageLoaded ? ' is-loaded' : ''}`}>
-            <svg
-              className="flow-highlight-svg"
-              viewBox="0 0 600 160"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <defs>
-                <filter id="flow-rough-1" x="-3%" y="-25%" width="106%" height="150%">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.018 0.06" numOctaves="2" seed="3" />
-                  <feDisplacementMap in="SourceGraphic" scale="14" />
-                </filter>
-                <filter id="flow-rough-2" x="-3%" y="-25%" width="106%" height="150%">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.025 0.07" numOctaves="2" seed="11" />
-                  <feDisplacementMap in="SourceGraphic" scale="10" />
-                </filter>
-                <linearGradient id="flow-ink" x1="0" y1="0.2" x2="1" y2="0.7">
-                  <stop offset="0%" stopColor="#ffcdb8" stopOpacity="0.35" />
-                  <stop offset="12%" stopColor="#ffa48a" stopOpacity="0.78" />
-                  <stop offset="50%" stopColor="#ff8a6e" stopOpacity="0.85" />
-                  <stop offset="88%" stopColor="#ffa48a" stopOpacity="0.78" />
-                  <stop offset="100%" stopColor="#ffd0bd" stopOpacity="0.32" />
-                </linearGradient>
-                <linearGradient id="flow-streak" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-                  <stop offset="40%" stopColor="#ffffff" stopOpacity="0.22" />
-                  <stop offset="70%" stopColor="#d96a4f" stopOpacity="0" />
-                  <stop offset="100%" stopColor="#c4513a" stopOpacity="0.18" />
-                </linearGradient>
-              </defs>
-              <rect
-                x="10"
-                y="22"
-                width="580"
-                height="116"
-                fill="url(#flow-ink)"
-                filter="url(#flow-rough-1)"
-                rx="4"
-              />
-              <rect
-                x="14"
-                y="28"
-                width="572"
-                height="104"
-                fill="url(#flow-streak)"
-                filter="url(#flow-rough-2)"
-                rx="4"
-              />
-            </svg>
-            <span className="flow-highlight-text">Flow</span>
-          </span>
-        </div>
-        <div
+        {/* Row 1: "A [WORD]" — full width, left-aligned. Inline flow (not flex)
+            so the cycling word's baseline naturally aligns with "A". */}
+        <h1
+          className="serif hero-line-1"
           style={{
-            fontStyle: 'italic',
-            fontFamily: "var(--font-instrument), 'Instrument Serif', serif",
-            fontWeight: 400,
-            marginTop: -8,
+            fontSize: 'clamp(84px, 10.3vw, 148px)',
+            lineHeight: 1.0,
+            margin: 0,
+            textAlign: 'left',
+            // The Drawers wordmark image can overflow the headline column and
+            // visually run into the video on the right. Raise the headline
+            // above the inline video — but only while the video is at rest
+            // (when expanded, the video gets a much higher z-index of its own
+            // and should sit above everything).
+            position: 'relative',
+            zIndex: expanded ? 'auto' : 5,
           }}
         >
-          without distractions
-        </div>
+          A
+          <span
+            style={{
+              fontSize: 'clamp(120px, 14.7vw, 212px)',
+              lineHeight: 1.0,
+              marginLeft: '0.18em',
+            }}
+          >
+            <HeroFlipWord id={STEPS[step].word}>
+              {STEPS[step].word === 'Drawers' ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src="/drawer-word.png"
+                  alt="Drawers"
+                  style={{ height: '0.95em', width: 'auto', display: 'block' }}
+                />
+              ) : (
+                STEPS[step].word
+              )}
+            </HeroFlipWord>
+          </span>
+        </h1>
+        {/* Row 2: "for each / project" on the left (top-anchored), video on the
+            right (bottom-anchored). The video's height is measured from the
+            text block via ResizeObserver, so the text drives the video's size
+            (not the other way around). */}
         <div
-          className="hero-with-row"
+          className="hero-row-2"
           style={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 28,
-            marginTop: -8,
+            alignItems: 'flex-end',
+            gap: 48,
+            // Pull row 2 up slightly to close the half-leading the larger
+            // cycling word's line-height adds below the baseline in row 1.
+            marginTop: '-0.7vw',
           }}
         >
-          with{' '}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/drawers-wordmark.png"
-            alt="Drawers"
-            style={{ height: 'clamp(84px, 10.3vw, 148px)', display: 'block' }}
-          />
+          <div
+            ref={row2TextRef}
+            className="serif"
+            style={{
+              fontSize: 'clamp(84px, 10.3vw, 148px)',
+              lineHeight: 1.0,
+              flex: '0 0 auto',
+              textAlign: 'left',
+              alignSelf: 'flex-start',
+            }}
+          >
+            <div className="hero-line-2">for each</div>
+            <div className="hero-line-3">project</div>
+          </div>
+          <div
+            style={{
+              pointerEvents: 'auto',
+              flex: '0 0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'stretch',
+              // Hide the video on non-Drawers steps. We use visibility + opacity
+              // so layout (size, position) stays identical and the text columns
+              // don't shift when stepping through words.
+              visibility: STEPS[step].word === 'Drawers' ? 'visible' : 'hidden',
+              opacity: STEPS[step].word === 'Drawers' ? 1 : 0,
+              transition: 'opacity 450ms cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          >
+            <div
+              className="hero-video-wrap"
+              style={{
+                height: row2TextHeight ?? 'auto',
+                aspectRatio: `${STEPS[step].aspect}`,
+              }}
+            >
+              <HeroVideoSequence
+                step={step}
+                onAdvance={() => setStep((s) => (s + 1) % STEPS.length)}
+                onClick={
+                  STEPS[step].word === 'Drawers'
+                    ? () => setExpanded((v) => !v)
+                    : undefined
+                }
+                expanded={expanded && STEPS[step].word === 'Drawers'}
+              />
+            </div>
+            {/* Click-to-expand affordance — fades in/out with the video. */}
+            <div
+              className="mono-label"
+              style={{
+                marginTop: 12,
+                textAlign: 'center',
+                opacity:
+                  STEPS[step].word === 'Drawers' && !expanded && videoVisible
+                    ? 1
+                    : 0,
+                transition: 'opacity 450ms cubic-bezier(0.4, 0, 0.2, 1)',
+                pointerEvents: 'none',
+              }}
+            >
+              click to expand
+            </div>
+          </div>
         </div>
-      </h1>
+      </div>
       <HeroDemo
         mode={mode}
         onModeChange={setMode}
@@ -346,7 +437,26 @@ export default function Hero() {
       />
       {/* Reserves vertical room for the emoji + label area (overlaid by EmojiPhysics) plus the BLOCK_GUTTER gap to the subheading. */}
       <div aria-hidden style={{ height: belowLineExtent + BLOCK_GUTTER }} />
-      <SubheadingGroup ref={subheadingRef} />
+      <SubheadingGroup ref={subheadingRef} onWatchDemo={handleWatchDemo} />
+      {/* Dim backdrop shown while the Drawers video is expanded. Click to close.
+          The video itself stays mounted in the row 2 placeholder and animates
+          itself to fill the centered overlay slot — see HeroVideoSequence. */}
+      {expanded && (
+        <div
+          onClick={() => setExpanded(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Drawers demo video"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(10, 7, 5, 0.82)',
+            zIndex: 1000,
+            cursor: 'zoom-out',
+            animation: 'hero-modal-fade-in 220ms ease-out',
+          }}
+        />
+      )}
     </section>
   );
 }

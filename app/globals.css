@@ -101,13 +101,13 @@ a { color: inherit; }
 
   /* hero typography */
   section:first-of-type { min-height: auto !important; padding-top: 30px !important; padding-bottom: 60px !important; }
-  section:first-of-type h1 { font-size: 48px !important; line-height: 0.95 !important; }
-  section:first-of-type h1 .hero-flow-line { font-size: 60px !important; margin-bottom: 10px !important; }
-  section:first-of-type h1 > div:nth-child(2) { margin-top: 4px !important; }
-  section:first-of-type h1 .hero-with-row { margin-top: 10px !important; }
-  section:first-of-type h1 img { height: 48px !important; transform: none !important; }
-  /* the with-wordmark row: tighten gap */
-  .hero-with-row { gap: 10px !important; }
+  section:first-of-type h1 { font-size: 56px !important; line-height: 0.98 !important; text-align: left !important; }
+  /* collapse the 2-col headline+video grid; hide the video on mobile to keep the hero compact */
+  section:first-of-type .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  section:first-of-type .hero-video-wrap { display: none !important; }
   section:first-of-type p { font-size: 16px !important; margin-top: 24px !important; max-width: 100% !important; padding: 0 !important; }
   section:first-of-type a[href*="Drawers.dmg"],
   section:first-of-type .watch-demo-btn { padding: 14px 20px !important; font-size: 14px !important; }
@@ -265,4 +265,78 @@ a { color: inherit; }
     animation: none;
     --flow-reveal: 100%;
   }
+}
+
+/* ─── Hero flipping word ──────────────────────────────────────────────────
+   The visible word in "A [Dock|space|world]" rotates around its bottom edge
+   on a 3D plane (rotateX) when the video below ends. Two stacked absolutely-
+   positioned layers handle out/in; an invisible spacer sized to the longest
+   word reserves width so the heading doesn't reflow on swap.
+   ───────────────────────────────────────────────────────────────────────── */
+.flip-word {
+  position: relative;
+  display: inline-block;
+  perspective: 800px;
+  vertical-align: baseline;
+}
+/* The spacer reserves the inline-block's WIDTH (sized to the wordmark image,
+   the widest content the slot ever holds) and establishes its BASELINE (via
+   the inline text rendered in the heading font). Both are invisible. */
+.flip-word__spacer {
+  visibility: hidden;
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+}
+.flip-word__spacer-img {
+  height: 0.95em;
+  width: auto;
+  display: inline-block;
+  vertical-align: baseline;
+}
+/* Text overlaid on top of the image so it doesn't add width to the slot. The
+   text only contributes baseline metrics. */
+.flip-word__spacer-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+/* Visible flip layers render in italic Instrument Serif. */
+.flip-word__layer {
+  font-style: italic;
+  font-family: var(--font-instrument), 'Instrument Serif', serif;
+  font-weight: 400;
+}
+.flip-word__layer {
+  position: absolute;
+  /* Anchor to bottom-left of the inline-block so the layer's text baseline
+     aligns with the spacer's baseline (= the surrounding text baseline). */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform-origin: 50% 100%;
+  backface-visibility: hidden;
+  transition:
+    transform 700ms cubic-bezier(0.55, 0.06, 0.32, 1),
+    opacity   700ms cubic-bezier(0.55, 0.06, 0.32, 1);
+  will-change: transform, opacity;
+}
+/* enter: starts below the baseline, rotated forward, invisible. */
+.flip-word__layer--enter { transform: rotateX(90deg);  opacity: 0; }
+/* idle: at rest. The freshly-mounted enter-layer transitions here on the next frame. */
+.flip-word__layer--idle  { transform: rotateX(0deg);   opacity: 1; }
+/* leave: rotates up and out. */
+.flip-word__layer--leave { transform: rotateX(-90deg); opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-word__layer {
+    transition: opacity 250ms ease-out;
+    transform: none !important;
+  }
+}
+
+/* Drawers expanded-video modal fade-in. */
+@keyframes hero-modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }

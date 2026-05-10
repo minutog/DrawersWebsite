@@ -13,12 +13,12 @@ export default function Page() {
     <>
       <Nav />
       <Hero />
-      <Distraction />
+      {/*<Distraction />*/}
+        <HowSteps />
       <Why />
-      <HowSteps />
       {/*<Aliveness />*/}
+        <FAQ />
       <Manifesto />
-      <FAQ />
       <Download />
     </>
   );
