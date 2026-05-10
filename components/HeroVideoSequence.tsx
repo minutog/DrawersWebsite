@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 // Drawers step, the cycle advances on `ended` (full video duration).
 export const STEPS = [
   { word: 'Dock',    src: '/how-1-project-drawer.mp4', loops: 1, aspect: 1108 / 720,   holdMs: 1500 },
-  { word: 'space',   src: '/how-3-new-window.mp4',     loops: 1, aspect: 1108 / 720,   holdMs: 1500 },
+  { word: 'Space',   src: '/how-3-new-window.mp4',     loops: 1, aspect: 1108 / 720,   holdMs: 1500 },
   { word: 'Drawers', src: '/WhatIsADrawer_2.mp4',      loops: 1, aspect: 1660 / 1080,  holdMs: null as number | null },
 ] as const;
 

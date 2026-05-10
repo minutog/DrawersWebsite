@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import EmojiPhysics, { EMOJIS } from './EmojiPhysics';
 import HeroDemo from './HeroDemo';
 import HeroFlipWord from './HeroFlipWord';
@@ -134,6 +134,12 @@ export default function Hero() {
   const [isMobile, setIsMobile] = useState(false);
   const [headingTopPad, setHeadingTopPad] = useState(40);
   const [heroMinHeight, setHeroMinHeight] = useState<number | null>(null);
+  // True once the layout effect has measured heading/subheading and applied
+  // the centered top padding. Until then, the hero-grid is rendered with
+  // visibility:hidden so the user doesn't see a one-frame "drop" as the
+  // padding goes from the 40px SSR fallback to the measured center value
+  // on hydration. Subheading + emojis stay visible throughout.
+  const [layoutReady, setLayoutReady] = useState(false);
   const [step, setStep] = useState(0);
   const [row2TextHeight, setRow2TextHeight] = useState<number | null>(null);
   const [expanded, setExpanded] = useState(false);
@@ -156,7 +162,12 @@ export default function Hero() {
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const subheadingRef = useRef<HTMLDivElement | null>(null);
   const row2TextRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
+  // Measure synchronously before paint so the video wrap has its final height
+  // on the very first frame — otherwise the video defaults to its intrinsic
+  // pixel size, the headline block (width: fit-content + marginInline: auto)
+  // centers narrow, then re-centers a frame later when the height lands,
+  // visibly shifting the "A" to the left.
+  useLayoutEffect(() => {
     const el = row2TextRef.current;
     if (!el) return;
     const measure = () => setRow2TextHeight(el.getBoundingClientRect().height);
@@ -209,7 +220,11 @@ export default function Hero() {
   // Mirrors EmojiPhysics.tsx uniformSize/labels.
   const belowLineExtent = isMobile ? 130 : 83;
   const toggleToEmojiGap = isMobile ? 70 : 90;
-  useEffect(() => {
+  // useLayoutEffect (instead of useEffect) so the centered top padding lands
+  // synchronously after hydration, before the next paint — otherwise the
+  // hero visibly jumps down by a dozen-plus px from the initial 40px fallback
+  // to the centered value on the very next frame.
+  useLayoutEffect(() => {
     const compute = () => {
       const heading = headingRef.current;
       const subheading = subheadingRef.current;
@@ -229,6 +244,7 @@ export default function Hero() {
       setHeroMinHeight(
         centeredPad + headingHeight + BLOCK_GUTTER + visualBlockHeight + BLOCK_GUTTER + subheadingHeight + 80,
       );
+      setLayoutReady(true);
     };
     compute();
     window.addEventListener('resize', compute);
@@ -304,6 +320,10 @@ export default function Hero() {
           width: 'fit-content',
           maxWidth: '100%',
           marginInline: 'auto',
+          // Hide until the layout effect computes the final centered top
+          // padding — otherwise the block would visibly drop ~18px from the
+          // 40px SSR fallback to the measured center on hydration.
+          visibility: layoutReady ? 'visible' : 'hidden',
         }}
       >
         {/* Row 1: "A [WORD]" — full width, left-aligned. Inline flow (not flex)
@@ -384,16 +404,28 @@ export default function Hero() {
               alignItems: 'stretch',
               // Hide the video on non-Drawers steps. We use visibility + opacity
               // so layout (size, position) stays identical and the text columns
-              // don't shift when stepping through words.
+              // don't shift when stepping through words. Visibility is delayed
+              // by the fade duration on the way out so child fades (notably the
+              // "click to expand" hint below) are actually visible — without
+              // the delay, visibility snaps to hidden and clips the fade.
               visibility: STEPS[step].word === 'Drawers' ? 'visible' : 'hidden',
               opacity: STEPS[step].word === 'Drawers' ? 1 : 0,
-              transition: 'opacity 450ms cubic-bezier(0.4, 0, 0.2, 1)',
+              transition:
+                'opacity 450ms cubic-bezier(0.4, 0, 0.2, 1), ' +
+                'visibility 0s linear ' +
+                (STEPS[step].word === 'Drawers' ? '0s' : '450ms'),
             }}
           >
             <div
               className="hero-video-wrap"
               style={{
-                height: row2TextHeight ?? 'auto',
+                // Fallback height mirrors the row-2 text block (2 lines at
+                // clamp(84px, 10.3vw, 148px) with line-height 1.0 = 2x). This
+                // matters for the very first paint, before useLayoutEffect's
+                // measurement lands — SSR'd HTML uses this height so the
+                // headline block (width: fit-content) doesn't re-center on
+                // hydration, which would visibly jolt the "A" left.
+                height: row2TextHeight ?? 'clamp(168px, 20.6vw, 296px)',
                 aspectRatio: `${STEPS[step].aspect}`,
               }}
             >

@@ -340,3 +340,22 @@ a { color: inherit; }
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
+/* Hero emoji wrapper fade-in on first mount. The EmojiPhysics rAF loop
+   writes opacity directly onto each emoji node every frame, so we cannot
+   animate the emojis themselves — instead animate the wrapper, whose
+   opacity composites multiplicatively over the children's. */
+@keyframes hero-emojis-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.hero-emojis-fade-in {
+  animation: hero-emojis-fade-in 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-emojis-fade-in {
+    animation: none;
+  }
+}

@@ -59,6 +59,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${instrumentSerif.variable} ${fraunces.variable}`}>
       <head>
         <link rel="stylesheet" href="/devices.min.css" />
+        {/* Preload the Drawers wordmark so the hero flip-word spacer has its
+            final width on first paint — otherwise the headline (which uses
+            width: fit-content + marginInline: auto) re-centers when the PNG
+            finishes decoding, visually shifting the "A" left. */}
+        <link rel="preload" as="image" href="/drawer-word.png" />
       </head>
       <body>
         <PostHogProvider>{children}</PostHogProvider>

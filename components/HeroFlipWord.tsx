@@ -33,6 +33,13 @@ export default function HeroFlipWord({ id, children }: HeroFlipWordProps) {
 
     const newLayerId = layerIdCounter.current++;
     setLayers((prev) => {
+      // Re-check inside the updater: under React StrictMode the effect runs
+      // twice on mount, and the captured `layers` above is the same stale
+      // empty array both times — so without this guard, the first mount
+      // queues two enter-layers for "Dock" and we see two flip directions
+      // colliding on first appearance.
+      const prevTarget = prev.find((l) => l.state === 'enter') ?? prev.find((l) => l.state === 'idle');
+      if (prevTarget && prevTarget.contentId === id) return prev;
       const next = prev.map((l) =>
         l.state === 'idle' || l.state === 'enter'
           ? { ...l, state: 'leave' as const }

@@ -66,6 +66,12 @@ export default function EmojiPhysics({
   const activeIndexRef = useRef(0);
   const highlightVisRef = useRef(0);
   const highlightPosRef = useRef({ x: 0, y: 0, w: 0, h: 0, init: false });
+  // First-mount fade-in is handled by the `.hero-emojis-fade-in` CSS animation
+  // applied per-emoji, with a stagger delay of `i * 40ms`. The rAF loop below
+  // would otherwise clobber the CSS-animated opacity by writing inline opacity
+  // every frame, so we suppress those writes until the staggered fade is done.
+  // Total: 400ms duration + (count-1) * 40ms stagger.
+  const fadeInUntilRef = useRef<number | null>(null);
 
   useEffect(() => {
     const prev = modeRef.current;
@@ -142,6 +148,9 @@ export default function EmojiPhysics({
     });
     bodiesRef.current = list;
     setSeeded(list);
+    // Mark when the staggered CSS fade-in completes; until then, the rAF loop
+    // skips its inline opacity writes so they don't clobber the CSS animation.
+    fadeInUntilRef.current = performance.now() + 400 + Math.max(0, list.length - 1) * 40;
   }, [count, assets, minSize, maxSize, rand]);
 
   useEffect(() => {
@@ -231,10 +240,18 @@ export default function EmojiPhysics({
         const node = elsRef.current[i];
         if (node) {
           node.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg) scale(${b.scale})`;
-          const isActive = currentMode === 'lined' && i === activeIndexRef.current;
-          const targetOpacity = currentMode === 'lined' ? (isActive ? 1 : 0.35) : 1;
-          const currentOpacity = parseFloat(node.style.opacity || '1');
-          node.style.opacity = String(currentOpacity + (targetOpacity - currentOpacity) * 0.1);
+          // Skip inline opacity writes while the per-emoji CSS fade-in is still
+          // running, so the animation isn't clobbered. After the staggered fade
+          // window passes, resume normal active/inactive opacity behavior.
+          const fadeUntil = fadeInUntilRef.current;
+          const fadeInProgress =
+            fadeUntil !== null && performance.now() < fadeUntil;
+          if (!fadeInProgress) {
+            const isActive = currentMode === 'lined' && i === activeIndexRef.current;
+            const targetOpacity = currentMode === 'lined' ? (isActive ? 1 : 0.35) : 1;
+            const currentOpacity = parseFloat(node.style.opacity || '1');
+            node.style.opacity = String(currentOpacity + (targetOpacity - currentOpacity) * 0.1);
+          }
         }
         const labelNode = labelsRef.current[i];
         if (labelNode) {
@@ -399,6 +416,7 @@ export default function EmojiPhysics({
           }}
           onMouseDown={(e) => onDown(e, b.id)}
           onTouchStart={(e) => onDown(e, b.id)}
+          className="hero-emojis-fade-in"
           style={{
             position: 'absolute',
             left: 0,
@@ -415,6 +433,8 @@ export default function EmojiPhysics({
             pointerEvents: 'auto',
             cursor: 'grab',
             willChange: 'transform',
+            // Stagger so emojis fade in one after another rather than all at once.
+            animationDelay: `${i * 40}ms`,
             fontFamily:
               '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif',
             filter: 'drop-shadow(0 8px 14px rgba(40,20,0,0.15))',
