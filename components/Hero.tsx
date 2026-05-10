@@ -143,20 +143,14 @@ export default function Hero() {
   const [step, setStep] = useState(0);
   const [row2TextHeight, setRow2TextHeight] = useState<number | null>(null);
   const [expanded, setExpanded] = useState(false);
-  // Mirrors HeroVideoSequence's `visible` state so we can fade UI elements
-  // (the "click to expand" hint) in sync with the video itself.
+  // The video's opacity-1/0 state is lifted up here so the "click to expand"
+  // hint below the video can read from the SAME state in the SAME render.
+  // When this flips, both elements' opacity values change in one commit and
+  // the browser starts both 450ms transitions in the same frame — they fade
+  // in lockstep on both directions. The cycle's mount-fade-in, advance
+  // fade-out, and expanded-force-true logic all live inside HeroVideoSequence
+  // and call `setVideoVisible` from there.
   const [videoVisible, setVideoVisible] = useState(false);
-  useEffect(() => {
-    setVideoVisible(false);
-    // Same timing constants as HeroVideoSequence (FLIP_MS + HOLD_AFTER_MS).
-    const t = setTimeout(() => setVideoVisible(true), 700 + 450);
-    return () => clearTimeout(t);
-  }, [step]);
-  // If the user expands while the video is mid-hold, force-show the hint's
-  // sibling state to true (same override HeroVideoSequence does for the video).
-  useEffect(() => {
-    if (expanded) setVideoVisible(true);
-  }, [expanded]);
   const lineTargetRef = useRef<HTMLDivElement | null>(null);
   const toggleRef = useRef<HTMLDivElement | null>(null);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
@@ -438,20 +432,24 @@ export default function Hero() {
                     : undefined
                 }
                 expanded={expanded && STEPS[step].word === 'Drawers'}
+                visible={videoVisible}
+                setVisible={setVideoVisible}
               />
             </div>
-            {/* Click-to-expand affordance — fades in/out with the video. */}
+            {/* Click-to-expand affordance — reads `videoVisible` (lifted from
+                HeroVideoSequence) so its opacity flips in the SAME render as
+                the video's, ensuring both 450ms transitions start in the same
+                frame. */}
             <div
-              className="mono-label"
-              style={{
-                marginTop: 12,
-                textAlign: 'center',
-                opacity:
-                  STEPS[step].word === 'Drawers' && !expanded && videoVisible
-                    ? 1
-                    : 0,
-                transition: 'opacity 450ms cubic-bezier(0.4, 0, 0.2, 1)',
-                pointerEvents: 'none',
+              className={`mono-label hero-hint${
+                STEPS[step].word === 'Drawers' && !expanded && videoVisible
+                  ? ' hero-hint--visible'
+                  : ''
+              }`}
+              ref={(el) => {
+                if (!el) return;
+                const cs = getComputedStyle(el);
+                console.log(`[HINT-DOM] class="${el.className}" inlineStyle="${el.getAttribute('style') || ''}" computedOpacity=${cs.opacity} videoVisible=${videoVisible}`);
               }}
             >
               click to expand

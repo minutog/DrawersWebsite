@@ -62,6 +62,21 @@ a { color: inherit; }
   font-weight: 500;
 }
 
+/* "Click to expand" hint below the Drawers video. The transition lives in
+   CSS (not inline) so that React re-renders never re-apply the transition
+   string mid-animation — the browser sees a stable transition rule and the
+   only thing that flips is the class, which atomically toggles opacity. */
+.hero-hint {
+  margin-top: 12px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 450ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+.hero-hint--visible {
+  opacity: 1;
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.85); }

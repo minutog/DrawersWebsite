@@ -39,16 +39,27 @@ interface HeroVideoSequenceProps {
   onClick?: () => void;
   /** When true, the video container animates to a centered, larger overlay. */
   expanded?: boolean;
+  /**
+   * Controlled visibility — when true, the video is at opacity 1; false fades
+   * to 0 with a 450ms transition. The parent owns this state so sibling UI
+   * (e.g. a "click to expand" hint outside this component) can be driven from
+   * the same value in the same render, guaranteeing lockstep opacity changes.
+   */
+  visible: boolean;
+  /** Setter for `visible`. Called by the cycle's internal timing logic. */
+  setVisible: (v: boolean) => void;
 }
 
-export default function HeroVideoSequence({ step, onAdvance, onClick, expanded = false }: HeroVideoSequenceProps) {
+export default function HeroVideoSequence({ step, onAdvance, onClick, expanded = false, visible, setVisible }: HeroVideoSequenceProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const loopCountRef = useRef(0);
   const advancingRef = useRef(false);
-  // Start hidden so the page loads with no video, matching the empty flip-word
-  // initial state. The useEffect on `[step]` below fades the video in after
-  // FLIP_MS + HOLD_AFTER_MS — i.e. once Dock has flipped in.
-  const [visible, setVisible] = useState(false);
+  // `visible` is a controlled prop owned by the parent so sibling UI (the
+  // "click to expand" hint) can share the exact same state in the same render.
+  // The cycle's timing logic — mount fade-in, advance fade-out, and the
+  // expanded-force-true override — writes via `setVisible`; behavior is
+  // otherwise identical to when `visible` was internal state.
+
   // FLIP animation state. We capture the inline placeholder's rect at the
   // moment `expanded` toggles, then animate from that rect to the centered
   // target rect (or vice-versa on close). The video element itself never
