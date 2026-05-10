@@ -117,12 +117,34 @@ a { color: inherit; }
   /* hero typography */
   section:first-of-type { min-height: auto !important; padding-top: 30px !important; padding-bottom: 60px !important; }
   section:first-of-type h1 { font-size: 56px !important; line-height: 0.98 !important; text-align: left !important; }
-  /* collapse the 2-col headline+video grid; hide the video on mobile to keep the hero compact */
+  /* collapse the 2-col headline+video grid */
   section:first-of-type .hero-grid {
     grid-template-columns: 1fr !important;
     gap: 32px !important;
   }
-  section:first-of-type .hero-video-wrap { display: none !important; }
+  /* Mobile: stack hero video under "for each / project" text instead of hiding it.
+     Desktop puts text+video side-by-side via inline flex on .hero-row-2; on
+     mobile we flip to a column and let width drive the video's size via its
+     per-step inline aspectRatio. Visibility/opacity transitions for non-Drawers
+     steps remain on the video's parent wrapper and stay untouched. */
+  section:first-of-type .hero-row-2 {
+    flex-direction: column !important;
+    /* stretch (not flex-start) so the video's parent wrapper — which has
+       inline `flex: 0 0 auto` and no class hook — fills the column width.
+       The text block uses inline `alignSelf: flex-start` so it keeps its
+       intrinsic width regardless. */
+    align-items: stretch !important;
+    gap: 24px !important;
+    margin-top: 0 !important;
+  }
+  /* JS sets an inline `height: row2TextHeight` (px) on .hero-video-wrap, sized
+     from the desktop text block — meaningless in column layout. Override so
+     width + the inline per-step aspectRatio drive the box. */
+  section:first-of-type .hero-video-wrap {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 480px !important;
+  }
   section:first-of-type p { font-size: 16px !important; margin-top: 24px !important; max-width: 100% !important; padding: 0 !important; }
   section:first-of-type a[href*="Drawers.dmg"],
   section:first-of-type .watch-demo-btn { padding: 14px 20px !important; font-size: 14px !important; }
