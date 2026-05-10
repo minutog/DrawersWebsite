@@ -116,7 +116,16 @@ a { color: inherit; }
 
   /* hero typography */
   section:first-of-type { min-height: auto !important; padding-top: 30px !important; padding-bottom: 60px !important; }
-  section:first-of-type h1 { font-size: 56px !important; line-height: 0.98 !important; text-align: left !important; }
+  section:first-of-type h1 { font-size: 46px !important; line-height: 0.98 !important; text-align: left !important; }
+  /* The cycling word inside h1 has its own inline `fontSize: clamp(120px, 14.7vw, 212px)`,
+     which the h1 rule doesn't reach. At 120px the Drawers wordmark image (width ≈ 3.3em)
+     and the FlipWord spacer (rendered text "Drawers") overflow the mobile content width.
+     Scale down proportionally to "A" (h1 is 46px) and tighten the leading margin so the
+     longest word + image fits within the 375px-class viewport content area. */
+  section:first-of-type h1 > span { font-size: 60px !important; margin-left: 0.1em !important; }
+  /* Row 2 ("for each / project") inherits its inline font-size from the same
+     clamp() formula as h1 row 1 — scale down to match the reduced row 1. */
+  section:first-of-type .hero-row-2 > div:first-child { font-size: 46px !important; }
   /* collapse the 2-col headline+video grid */
   section:first-of-type .hero-grid {
     grid-template-columns: 1fr !important;
