@@ -59,11 +59,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${instrumentSerif.variable} ${fraunces.variable}`}>
       <head>
         <link rel="stylesheet" href="/devices.min.css" />
-        {/* Preload the Drawers wordmark so the hero flip-word spacer has its
-            final width on first paint — otherwise the headline (which uses
-            width: fit-content + marginInline: auto) re-centers when the PNG
-            finishes decoding, visually shifting the "A" left. */}
+        {/* Preload hero-critical assets so they're ready before the user sees
+            them.
+            - drawer-word.png: gives the hero flip-word spacer its final width
+              on first paint — otherwise the headline (width: fit-content +
+              marginInline: auto) re-centers when the PNG finishes decoding,
+              visually shifting the "A" left.
+            - WhatIsADrawer_2.mp4: the 12 MB Drawer demo. The cycle reaches the
+              Drawers step ~3s in (after Dock + Space holds), so kicking the
+              download off here in parallel with JS/CSS means the bytes are
+              cached by the time the <video> element mounts and fades in. */}
         <link rel="preload" as="image" href="/drawer-word.png" />
+        <link rel="preload" as="video" type="video/mp4" href="/WhatIsADrawer_2.mp4" />
       </head>
       <body>
         <PostHogProvider>{children}</PostHogProvider>

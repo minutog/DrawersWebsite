@@ -10,10 +10,18 @@ import { useEffect, useRef, useState } from 'react';
 // `aspect` is the clip's width/height ratio (used to size the wrapper).
 // `holdMs` is the time the word stays on screen for word-only beats. For the
 // Drawers step, the cycle advances on `ended` (full video duration).
+// `preload` is the <video preload> attribute. Dock and Space are never visibly
+// played (the Hero hides them with visibility:hidden + opacity:0 and the cycle
+// advances on the holdMs timer, not the video's `ended` event), so we skip
+// fetching their bytes entirely with "none". Drawers needs to be ready the
+// instant it fades in, so we keep "auto" — and reinforce that with a
+// <link rel="preload" as="video"> in app/layout.tsx that kicks off the
+// download on initial page load (well before the cycle reaches the Drawers
+// step ~3s later).
 export const STEPS = [
-  { word: 'Dock',    src: '/how-1-project-drawer.mp4', loops: 1, aspect: 1108 / 720,   holdMs: 1500 },
-  { word: 'Space',   src: '/how-3-new-window.mp4',     loops: 1, aspect: 1108 / 720,   holdMs: 1500 },
-  { word: 'Drawers', src: '/WhatIsADrawer_2.mp4',      loops: 1, aspect: 1660 / 1080,  holdMs: null as number | null },
+  { word: 'Dock',    src: '/how-1-project-drawer.mp4', loops: 1, aspect: 1108 / 720,   holdMs: 1500, preload: 'none' },
+  { word: 'Space',   src: '/how-3-new-window.mp4',     loops: 1, aspect: 1108 / 720,   holdMs: 1500, preload: 'none' },
+  { word: 'Drawers', src: '/WhatIsADrawer_2.mp4',      loops: 1, aspect: 1660 / 1080,  holdMs: null as number | null, preload: 'auto' },
 ] as const;
 
 // Video fade timing. The word flip itself takes ~700ms. We bracket the flip
@@ -268,7 +276,7 @@ export default function HeroVideoSequence({ step, onAdvance, onClick, expanded =
           autoPlay
           muted
           playsInline
-          preload="auto"
+          preload={current.preload}
           onEnded={handleEnded}
           onError={triggerAdvance}
           style={{
